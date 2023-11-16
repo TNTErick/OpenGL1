@@ -17,7 +17,13 @@ find_package(wxWidgets COMPONENTS core base gl REQUIRED)
 set(GLEW_USE_STATIC_LIBS ON)
 find_package(GLEW REQUIRED CONFIG)
 
-set(SRCS main.cpp)
+
+# the compiled files here.
+set(SRCS
+    MyApp.cpp
+    MyWindow.cpp
+    MyGLCanvas.cpp
+)
 
 include(${wxWidgets_USE_FILE})
 
