@@ -11,16 +11,18 @@
 #include <wx/log.h>
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
-#include "utils.h"
+#include "openGLDebug.h"
 
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     : wxGLCanvas(parent, attrs, wxID_ANY),
       isOpenGLInitialised(false),
-      _context(nullptr)
+      _context(nullptr),
+      r(0.f),
+      incr(.05f)
 {
     wxGLContextAttrs oglattrs;
-    oglattrs.PlatformDefaults().CoreProfile().OGLVersion(XY_GLVMA, XY_GLVMIN).EndList();
+    oglattrs.PlatformDefaults().CompatibilityProfile().OGLVersion(XY_GLVMA, XY_GLVMIN).EndList(); // TODO
     _context = new wxGLContext(this, nullptr, &oglattrs);
 
     if (!_context->IsOK())
@@ -52,7 +54,7 @@ bool MyGLCanvas::InitOpenGL()
     SetCurrent(*_context);
 
     // init opengl functions
-    if (!InitOpenGLFunctions())
+    if (!InitGLEW())
     {
         wxMessageBox(
             "Could not initialize OpenGL function pointers.",
@@ -125,7 +127,7 @@ bool MyGLCanvas::InitOpenGL()
         wxLogDebug("Shader Program Linking Failed: %s", infoLog);
     }
 
-    glDeleteShader(shVertex), glDeleteShader(shFragment);
+    // glDeleteShader(shVertex), glDeleteShader(shFragment);
 
     // create VAO and VBO; put the id to this->VAO and this->VBO
 
@@ -148,11 +150,13 @@ bool MyGLCanvas::InitOpenGL()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindVertexArray(0);
 
+    _glErrorLoopThroughAndLog(__LINE__, __FILE__);
+
     isOpenGLInitialised = true;
     return true;
 }
 
-bool MyGLCanvas::InitOpenGLFunctions()
+bool MyGLCanvas::InitGLEW()
 {
     GLenum status = glewInit();
 
@@ -169,24 +173,32 @@ bool MyGLCanvas::InitOpenGLFunctions()
 
 void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
+    _glErrorLoopThroughAndLog(__LINE__, __FILE__);
     wxPaintDC dc(this);
 
     if (!isOpenGLInitialised)
         return;
 
-    SetCurrent(*_context);
+    _c(SetCurrent(*_context));
 
-    glClearColor(0.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    _c(glClearColor(0.f, 0.f, 0.f, 1.f));
+    _c(glClear(GL_COLOR_BUFFER_BIT));
 
-    glUseProgram(shader);
+    _c(glUseProgram(shader));
+    _c(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
     // set the color
     int colorLocation = glGetUniformLocation(shader, "triangleColor");
-    glUniform4f(colorLocation, 1.f, 0.f, 0.f, 1.f);
+    _c(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
 
-    glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    _c(glBindVertexArray(vao));
+    _c(glDrawArrays(GL_TRIANGLES, 0, 3));
+
+    r += incr;
+    if (r >= 1.f)
+        incr = -.05f;
+    else if (r <= 0.f)
+        incr = .05f;
 
     SwapBuffers();
 }
@@ -209,3 +221,5 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
 
     event.Skip();
 }
+
+

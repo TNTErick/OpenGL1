@@ -10,7 +10,7 @@ set_property(DIRECTORY PROPERTY EP_BASE ${CMAKE_BINARY_DIR}/subprojects)
 
 set(STAGED_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/stage)
 
-#include_directories(wx_opengl_tutorial ${CMAKE_SOURCE_DIR}/include )
+include_directories(wx_opengl_tutorial ${CMAKE_SOURCE_DIR}/include )
 
 add_subdirectory(thirdparty)
 

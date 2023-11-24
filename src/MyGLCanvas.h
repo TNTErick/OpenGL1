@@ -15,7 +15,7 @@
 #include <wx/wx.h>
 #include <GL/glew.h>
 #include <wx/glcanvas.h>
-#include "utils.h"
+#include"openGLDebug.h"
 
 class MyWindow;
 class MyGLCanvas : public wxGLCanvas
@@ -29,11 +29,12 @@ public:
 
 private:
     bool InitOpenGL();
-    bool InitOpenGLFunctions();
+    bool InitGLEW();
     bool isOpenGLInitialised;
 
     wxGLContext *_context;
     GLid_t vao, vbo, shader;
+    float r, incr;
 };
 
 #endif

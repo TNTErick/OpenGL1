@@ -25,4 +25,6 @@ MyWindow::MyWindow(const wxString &title)
     }
 }
 
-// TODO
+// TODO:????
+
+// what the hell is this doing here????

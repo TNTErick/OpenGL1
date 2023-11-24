@@ -15,6 +15,7 @@ MyApp::MyApp() : wxApp() {}
 
 bool MyApp::OnInit()
 {
+    wxLogInfo("Hello from GLEW/wxWidgets!");
     if (!wxApp::OnInit())
         return false;
 

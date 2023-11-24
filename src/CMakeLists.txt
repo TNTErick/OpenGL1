@@ -20,6 +20,7 @@ find_package(GLEW REQUIRED CONFIG)
 
 # the compiled files here.
 set(SRCS
+    openGLDebug.cpp
     MyApp.cpp
     MyWindow.cpp
     MyGLCanvas.cpp
