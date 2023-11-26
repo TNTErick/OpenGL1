@@ -12,4 +12,4 @@ There is no visible bugs in the project. TODO:
    * resizing the window too much causes the app to lag.
  * Test various things for loading an `.OBJ` file into the canvas.
  * Learn `glm` library for consequent usage.
- * Implement a button panel (`wxPanel`) or menubar (`wxMenubar`) for buttons to different things.
+ * Implement a button panel (`wxPanel` that overlaps with the current one looks better) or menubar (`wxMenubar`) for buttons to different things.
