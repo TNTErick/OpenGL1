@@ -18,6 +18,7 @@
 //#include <glm/ext.hpp>
 #include "openGLDebug.h"
 
-GLid_t getShader(GLenum shaderType, const char* shaderSourceCode);
+GLid_t getGLShadingProgram();
+
 
 #endif

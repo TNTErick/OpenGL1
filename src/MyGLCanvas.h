@@ -34,7 +34,7 @@ private:
     bool isOpenGLInitialised;
 
     wxGLContext *_context;
-    GLid_t vao, vbo, shader;
+    GLid_t vao, vbo, shadingProgram;
     float r, incr;
     wxTimer timer;
 };

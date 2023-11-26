@@ -12,5 +12,5 @@
 void _glErrorLoopThroughAndLog(int lineNum, const char *fileName)
 {
     for (GLenum error; (error = glGetError()) != GL_NO_ERROR;)
-        wxLogDebug("OpenGL Error in %s: line %d: %s", fileName, lineNum, gluErrorString(error));
+        wxLogDebug("OpenGL Error in %s, line %d: (%04X) %s", fileName, lineNum, error, gluErrorString(error));
 }

@@ -38,6 +38,11 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
         _context = nullptr;
     }
 
+    if(!timer.Start(30))
+    {
+        wxLogDebug("Cannot start timer");
+    }
+
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
     Bind(wxEVT_TIMER, &MyGLCanvas::OnTimer, this);
@@ -71,31 +76,7 @@ bool MyGLCanvas::InitOpenGL()
     wxLogDebug("OpenGL version: %s", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
     wxLogDebug("OpenGL vendor: %s", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
 
-    // add the shaders.
-    constexpr const GLchar *vertexShaderSourceCode = R"(
-        #version 330 core
-        layout (location = 0) in vec3 pos;
-        void main()
-        {
-            gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
-        }
-    )";
-
-    GLid_t vertexShader = getShader(GL_VERTEX_SHADER, vertexShaderSourceCode);
-
-    constexpr const GLchar *fragmentShaderSourceCode = R"(
-        #version 330 core
-        out vec4 fragColor;
-        uniform vec4 triangleColor;
-        void main()
-        {
-            fragColor = triangleColor;
-        }
-    )";
-
-    GLid_t fragmentShader = getShader(GL_FRAGMENT_SHADER, fragmentShaderSourceCode);
-
-    // glDeleteShader(vertexShader), glDeleteShader(fragmentShader);
+    shadingProgram = getGLShadingProgram();
 
     // create VAO and VBO; put the id to this->VAO and this->VBO
 
@@ -152,11 +133,11 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
     _c(glClearColor(0.f, 0.f, 0.f, 1.f));
     _c(glClear(GL_COLOR_BUFFER_BIT));
 
-    _c(glUseProgram(shader));
+    _c(glUseProgram(shadingProgram));
     _c(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 
     // set the color
-    int colorLocation = glGetUniformLocation(shader, "triangleColor");
+    int colorLocation = glGetUniformLocation(shadingProgram, "triangleColor");
     _c(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
 
     _c(glBindVertexArray(vao));
@@ -184,6 +165,7 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
     if (isOpenGLInitialised)
     {
         auto viewPortSize = event.GetSize() * GetContentScaleFactor();
+        //TODO: change the code here. Resizing the glViewport may result in too high framerate.
         glViewport(0, 0, viewPortSize.x, viewPortSize.y);
     }
 
@@ -192,4 +174,8 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
 
 void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
 {
+    //wxPostEvent(this, wxPaintEvent()); 
+    // wxPaintEvent is no longer constructable.
+
+    Refresh();
 }
