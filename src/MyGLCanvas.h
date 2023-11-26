@@ -24,8 +24,9 @@ public:
     MyGLCanvas(MyWindow *parent, const wxGLAttributes &canvasAttributes);
     ~MyGLCanvas();
 
-    void OnPaint(wxPaintEvent &event);
+    void OnPaint(wxPaintEvent & WXUNUSED(event));
     void OnSize(wxSizeEvent &event);
+    void OnTimer(wxTimerEvent &WXUNUSED(event));
 
 private:
     bool InitOpenGL();
@@ -35,6 +36,7 @@ private:
     wxGLContext *_context;
     GLid_t vao, vbo, shader;
     float r, incr;
+    wxTimer timer;
 };
 
 #endif

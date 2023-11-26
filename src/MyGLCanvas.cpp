@@ -12,6 +12,7 @@
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
 #include "openGLDebug.h"
+#include "shaders.h"
 
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
@@ -19,7 +20,8 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       isOpenGLInitialised(false),
       _context(nullptr),
       r(0.f),
-      incr(.05f)
+      incr(.05f),
+      timer(this)
 {
     wxGLContextAttrs oglattrs;
     oglattrs.PlatformDefaults().CompatibilityProfile().OGLVersion(XY_GLVMA, XY_GLVMIN).EndList(); // TODO
@@ -38,6 +40,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
 
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
+    Bind(wxEVT_TIMER, &MyGLCanvas::OnTimer, this);
 }
 
 // deconstruct the object by deleting context
@@ -69,7 +72,7 @@ bool MyGLCanvas::InitOpenGL()
     wxLogDebug("OpenGL vendor: %s", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
 
     // add the shaders.
-    constexpr const GLchar *srcshVertex = R"(
+    constexpr const GLchar *vertexShaderSourceCode = R"(
         #version 330 core
         layout (location = 0) in vec3 pos;
         void main()
@@ -78,20 +81,9 @@ bool MyGLCanvas::InitOpenGL()
         }
     )";
 
-    GLid_t shVertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(shVertex, 1, &srcshVertex, nullptr);
-    glCompileShader(shVertex);
+    GLid_t vertexShader = getShader(GL_VERTEX_SHADER, vertexShaderSourceCode);
 
-    int success;
-    char infoLog[512];
-    glGetShaderiv(shVertex, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(shVertex, sizeof infoLog, nullptr, infoLog);
-        wxLogDebug("Shader of Vertices is Compiled with Failure:%s", infoLog);
-    }
-
-    constexpr const GLchar *srcshFragment = R"(
+    constexpr const GLchar *fragmentShaderSourceCode = R"(
         #version 330 core
         out vec4 fragColor;
         uniform vec4 triangleColor;
@@ -101,33 +93,9 @@ bool MyGLCanvas::InitOpenGL()
         }
     )";
 
-    GLid_t shFragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(shFragment, 1, &srcshFragment, nullptr);
-    glCompileShader(shFragment);
+    GLid_t fragmentShader = getShader(GL_FRAGMENT_SHADER, fragmentShaderSourceCode);
 
-    glGetShaderiv(shFragment, GL_COMPILE_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(shFragment, sizeof infoLog, nullptr, infoLog);
-        wxLogDebug("Shader of Fragments is Compiled with Failure: %s", infoLog);
-    }
-
-    // create the shader, and delete the shaders for they are no longer needed.
-    shader = glCreateProgram();
-    glAttachShader(shader, shVertex);
-    glAttachShader(shader, shFragment);
-    glLinkProgram(shader);
-
-    glGetProgramiv(shader, GL_LINK_STATUS, &success);
-
-    if (!success)
-    {
-        glGetProgramInfoLog(shader, 512, nullptr, infoLog);
-        wxLogDebug("Shader Program Linking Failed: %s", infoLog);
-    }
-
-    // glDeleteShader(shVertex), glDeleteShader(shFragment);
+    // glDeleteShader(vertexShader), glDeleteShader(fragmentShader);
 
     // create VAO and VBO; put the id to this->VAO and this->VBO
 
@@ -222,4 +190,6 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
     event.Skip();
 }
 
-
+void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
+{
+}

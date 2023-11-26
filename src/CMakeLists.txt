@@ -24,6 +24,7 @@ set(SRCS
     MyApp.cpp
     MyWindow.cpp
     MyGLCanvas.cpp
+    shaders.cpp
 )
 
 include(${wxWidgets_USE_FILE})
