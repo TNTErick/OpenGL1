@@ -10,7 +10,7 @@ set_property(DIRECTORY PROPERTY EP_BASE ${CMAKE_BINARY_DIR}/subprojects)
 
 set(STAGED_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/stage)
 
-include_directories(wx_opengl_tutorial ${CMAKE_SOURCE_DIR}/include )
+# include_directories(wx_opengl_tutorial ${CMAKE_SOURCE_DIR}/../include/**)
 
 add_subdirectory(thirdparty)
 
@@ -19,6 +19,7 @@ ExternalProject_Add(${PROJECT_NAME}_core
   DEPENDS
   wxWidgets_external
   GLEW_external
+  # glm::glm
   SOURCE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   CMAKE_ARGS

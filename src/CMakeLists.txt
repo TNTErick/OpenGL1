@@ -18,6 +18,9 @@ set(GLEW_USE_STATIC_LIBS ON)
 find_package(GLEW REQUIRED CONFIG)
 
 
+set(glm_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/glm/glm/cmake/glm)
+find_package(glm REQUIRED)
+
 # the compiled files here.
 set(SRCS
     openGLDebug.cpp
@@ -42,4 +45,5 @@ else()
     add_executable(main WIN32 ${SRCS} main.exe.manifest)
 endif()
 
-target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES} GLEW::glew_s)
+target_include_directories(main PRIVATE ${GLM_INCLUDE_DIRS})
+target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES} GLEW::glew_s glm::glm)

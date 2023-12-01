@@ -14,11 +14,10 @@
 
 #include <GL/glew.h>
 #include <wx/glcanvas.h>
-//#include <glm/glm.hpp>
-//#include <glm/ext.hpp>
+#include <glm/glm.hpp>
+// #include <glm/ext.hpp>
 #include "openGLDebug.h"
 
 GLid_t getGLShadingProgram();
-
 
 #endif
