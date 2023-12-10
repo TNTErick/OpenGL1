@@ -21,14 +21,15 @@ find_package(GLEW REQUIRED CONFIG)
 set(glm_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/glm/glm/cmake/glm)
 find_package(glm REQUIRED)
 
+
 # the compiled files here.
-set(SRCS
-    openGLDebug.cpp
-    MyApp.cpp
-    MyWindow.cpp
-    MyGLCanvas.cpp
-    shaders.cpp
+list(APPEND SRCS
+${CMAKE_CURRENT_LIST_DIR}/MyApp.cpp
+${CMAKE_CURRENT_LIST_DIR}/MyWindow.cpp
+${CMAKE_CURRENT_LIST_DIR}/MyGLCanvas.cpp
 )
+
+include(OpenGL/CMakeLists.txt)
 
 include(${wxWidgets_USE_FILE})
 

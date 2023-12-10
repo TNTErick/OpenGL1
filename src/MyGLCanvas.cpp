@@ -11,8 +11,7 @@
 #include <wx/log.h>
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
-#include "openGLDebug.h"
-#include "shaders.h"
+#include "OpenGL/shaders.h"
 
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
@@ -23,6 +22,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       incr(.05f),
       timer(this)
 {
+    // context.
     wxGLContextAttrs oglattrs;
     oglattrs.PlatformDefaults().CompatibilityProfile().OGLVersion(XY_GLVMA, XY_GLVMIN).EndList(); // TODO
     _context = new wxGLContext(this, nullptr, &oglattrs);
@@ -38,11 +38,13 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
         _context = nullptr;
     }
 
-    if(!timer.Start(30))
+    // timer.
+    if (!timer.Start(30))
     {
         wxLogDebug("Cannot start timer");
     }
 
+    // bind events.
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
     Bind(wxEVT_TIMER, &MyGLCanvas::OnTimer, this);
@@ -81,12 +83,10 @@ bool MyGLCanvas::InitOpenGL()
     // create VAO and VBO; put the id to this->VAO and this->VBO
 
     glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-
     glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-    // draw the triangle
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     float vertices[] =
         {
             -.5f, -.5f, 0.f,
@@ -94,8 +94,10 @@ bool MyGLCanvas::InitOpenGL()
             0.f, .5f, 0.f};
 
     glBufferData(GL_ARRAY_BUFFER, sizeof vertices, vertices, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindVertexArray(0);
 
@@ -165,7 +167,7 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
     if (isOpenGLInitialised)
     {
         auto viewPortSize = event.GetSize() * GetContentScaleFactor();
-        //TODO: change the code here. Resizing the glViewport may result in too high framerate.
+        // TODO: change the code here. Resizing the glViewport may result in too high framerate.
         glViewport(0, 0, viewPortSize.x, viewPortSize.y);
     }
 
@@ -174,8 +176,8 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
 
 void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
 {
-    //wxPostEvent(this, wxPaintEvent()); 
-    // wxPaintEvent is no longer constructable.
+    // wxPostEvent(this, wxPaintEvent());
+    //  wxPaintEvent is no longer constructable.
 
     Refresh();
 }

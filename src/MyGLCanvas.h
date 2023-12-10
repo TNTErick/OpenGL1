@@ -15,7 +15,7 @@
 #include <wx/wx.h>
 #include <GL/glew.h>
 #include <wx/glcanvas.h>
-#include"openGLDebug.h"
+#include "OpenGL/openGLDebug.h"
 
 class MyWindow;
 class MyGLCanvas : public wxGLCanvas
