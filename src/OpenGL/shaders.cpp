@@ -9,8 +9,11 @@
  */
 
 #include "shaders.h"
+#include <fstream>
+#include <string>
+#include "2d.shaders"
 
-GLid_t getShader(GLenum shaderType, const char* shaderSourceCode)
+GLid_t getShader(GLenum shaderType, const char *shaderSourceCode)
 {
     GLid_t id = glCreateShader(shaderType);
     glShaderSource(id, 1, &shaderSourceCode, nullptr);
@@ -19,13 +22,14 @@ GLid_t getShader(GLenum shaderType, const char* shaderSourceCode)
     int good;
     glGetShaderiv(id, GL_COMPILE_STATUS, &good);
 
-    if(!good)
+    if (!good)
     {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*) alloca(length +1 );
+        char *message = (char *)alloca(length + 1);
         glGetShaderInfoLog(id, length, nullptr, message);
         wxLogDebug("Shader is Compiled with Failure: %s", message);
+        free(message);
     }
 
     return id;
@@ -33,31 +37,10 @@ GLid_t getShader(GLenum shaderType, const char* shaderSourceCode)
 
 GLid_t getGLShadingProgram()
 {
-    
+
     // add the shaders, and compile them along with the program.
-    constexpr const GLchar *vertexShaderSourceCode = R"(
-        #version 330 core
-        layout (location = 0) in vec3 pos;
-        void main()
-        {
-            gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
-        }
-    )";
-
-    GLid_t vertexShader = getShader(GL_VERTEX_SHADER, vertexShaderSourceCode);
-
-    constexpr const GLchar *fragmentShaderSourceCode = R"(
-        #version 330 core
-        out vec4 fragColor;
-        uniform vec4 triangleColor;
-        void main()
-        {
-            fragColor = triangleColor;
-        }
-    )";
-
-    GLid_t fragmentShader = getShader(GL_FRAGMENT_SHADER, fragmentShaderSourceCode);
-
+    GLid_t vertexShader = getShader(GL_VERTEX_SHADER, vertexShaderSource);
+    GLid_t fragmentShader = getShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 
     GLid_t shadingProgram = glCreateProgram();
     glAttachShader(shadingProgram, vertexShader);
@@ -65,8 +48,18 @@ GLid_t getGLShadingProgram()
     glLinkProgram(shadingProgram);
     glValidateProgram(shadingProgram);
 
-    //TODO: error handling with retrieving the state of the shader program.
+    // retrieving the state of the shader program.
+    int good;
+    glGetProgramiv(shadingProgram, GL_VALIDATE_STATUS, &good);
 
+    if (!good)
+    {
+        int length;
+        glGetProgramiv(shadingProgram, GL_INFO_LOG_LENGTH, &length);
+        char *message = (char *)alloca(length + 1);
+        glGetShaderInfoLog(shadingProgram, length, nullptr, message);
+        wxLogDebug("Shader is Compiled with Failure: %s", message);
+    }
     glDeleteShader(vertexShader), glDeleteShader(fragmentShader);
 
     return shadingProgram;

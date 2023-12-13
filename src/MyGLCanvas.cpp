@@ -58,7 +58,7 @@ MyGLCanvas::~MyGLCanvas()
 
 bool MyGLCanvas::InitOpenGL()
 {
-    // set context; if it is nullptr, then construction failed.
+    // set OpenGL context; if it is nullptr, then construction failed.
     if (!_context)
         return false;
     SetCurrent(*_context);
@@ -78,29 +78,41 @@ bool MyGLCanvas::InitOpenGL()
     wxLogDebug("OpenGL version: %s", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
     wxLogDebug("OpenGL vendor: %s", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
 
-    shadingProgram = getGLShadingProgram();
+    // initialise data used for rendering.
 
-    // create VAO and VBO; put the id to this->VAO and this->VBO
-
+    // vao
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    // vbo
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    float vertices[] =
-        {
-            -.5f, -.5f, 0.f,
-            .5f, -.5f, 0.f,
-            0.f, .5f, 0.f};
-
+    float vertices[] = {
+        -.5f, -.5f, 0.f,
+        .5f, -.5f, 0.f,
+        .5f, .5f, 0.f,
+        -.5f, .5f, 0.f};
     glBufferData(GL_ARRAY_BUFFER, sizeof vertices, vertices, GL_STATIC_DRAW);
 
+    // ibo
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0};
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof indices, indices, GL_STATIC_DRAW);
+
+    // attrib array
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindVertexArray(0);
+    // shader program
+    shadingProgram = getGLShadingProgram();
 
+    // unbind everything and return.
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
     _glErrorLoopThroughAndLog(__LINE__, __FILE__);
 
     isOpenGLInitialised = true;
@@ -137,13 +149,18 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 
     _c(glUseProgram(shadingProgram));
     _c(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
-    // set the color
-    int colorLocation = glGetUniformLocation(shadingProgram, "triangleColor");
+    _c(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    _c(glBindVertexArray(vao));
+
+    // TODO: change this to draw the thingies in the cherno vid.
+    //  set the color
+    int colorLocation = glGetUniformLocation(shadingProgram, "u_Color");
     _c(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
 
-    _c(glBindVertexArray(vao));
-    _c(glDrawArrays(GL_TRIANGLES, 0, 3));
+    _c(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
 
     r += incr;
     if (r >= 1.f)
