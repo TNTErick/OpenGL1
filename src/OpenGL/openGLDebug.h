@@ -18,7 +18,7 @@
 typedef wxUint32 GLid_t;
 
 void _glErrorLoopThroughAndLog(int lineNum, const char* fileName);
-#define _c(x) while(glGetError()); x; _glErrorLoopThroughAndLog(__LINE__, __FILE__)
+#define xy_glError(x) while(glGetError()); x; _glErrorLoopThroughAndLog(__LINE__, __FILE__)
 
 
 #endif

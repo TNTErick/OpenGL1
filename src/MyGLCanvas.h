@@ -16,7 +16,10 @@
 #include <GL/glew.h>
 #include <wx/glcanvas.h>
 #include "OpenGL/openGLDebug.h"
+#include "OpenGL/VertexBuffer.h"
+#include "OpenGL/IndexBuffer.h"
 
+// will be included in the cpp file.
 class MyWindow;
 class MyGLCanvas : public wxGLCanvas
 {
@@ -34,7 +37,9 @@ private:
     bool isOpenGLInitialised;
 
     wxGLContext *_context;
-    GLid_t vao, vbo, ibo, shadingProgram;
+    VertexBuffer vb;
+    IndexBuffer ib;
+    GLid_t vao, shadingProgram;
     float r, incr;
     wxTimer timer;
 };

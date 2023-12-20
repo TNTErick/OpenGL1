@@ -1,3 +1,13 @@
+/*
+ *
+ * File:        src/OpenGL/2d.shaders
+ * Author:      TNTErick
+ * Created:     2023-12-13
+ * Modified:    2023-12-13
+ * Description: This is where shader is placed. Still treated as a cpp include file.
+ *
+ */
+
 constexpr const char vertexShaderSource[]=R"(
 #version 330 core
 

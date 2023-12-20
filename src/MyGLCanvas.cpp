@@ -85,22 +85,18 @@ bool MyGLCanvas::InitOpenGL()
     glBindVertexArray(vao);
 
     // vbo
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     float vertices[] = {
         -.5f, -.5f, 0.f,
         .5f, -.5f, 0.f,
         .5f, .5f, 0.f,
         -.5f, .5f, 0.f};
-    glBufferData(GL_ARRAY_BUFFER, sizeof vertices, vertices, GL_STATIC_DRAW);
+    vb.Init(vertices, sizeof(vertices));
 
     // ibo
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     unsigned int indices[] = {
         0, 1, 2,
         2, 3, 0};
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof indices, indices, GL_STATIC_DRAW);
+    ib.Init(indices, 6);
 
     // attrib array
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
@@ -110,8 +106,8 @@ bool MyGLCanvas::InitOpenGL()
     shadingProgram = getGLShadingProgram();
 
     // unbind everything and return.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    vb.Unbind();
+    ib.Unbind();
     glBindVertexArray(0);
     _glErrorLoopThroughAndLog(__LINE__, __FILE__);
 
@@ -142,25 +138,26 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
     if (!isOpenGLInitialised)
         return;
 
-    _c(SetCurrent(*_context));
+    xy_glError(SetCurrent(*_context));
 
-    _c(glClearColor(0.f, 0.f, 0.f, 1.f));
-    _c(glClear(GL_COLOR_BUFFER_BIT));
+    xy_glError(glClearColor(0.f, 0.f, 0.f, 1.f));
+    xy_glError(glClear(GL_COLOR_BUFFER_BIT));
 
-    _c(glUseProgram(shadingProgram));
-    _c(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    xy_glError(glUseProgram(shadingProgram));
+
+    vb.Bind();
+    ib.Bind();
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-
-    _c(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    _c(glBindVertexArray(vao));
+    xy_glError(glBindVertexArray(vao));
 
     // TODO: change this to draw the thingies in the cherno vid.
     //  set the color
     int colorLocation = glGetUniformLocation(shadingProgram, "u_Color");
-    _c(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
+    xy_glError(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
 
-    _c(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
+    xy_glError(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
 
     r += incr;
     if (r >= 1.f)

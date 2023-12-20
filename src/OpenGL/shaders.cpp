@@ -11,7 +11,7 @@
 #include "shaders.h"
 #include <fstream>
 #include <string>
-#include "2d.shaders"
+#include "2dshaders.h"
 
 GLid_t getShader(GLenum shaderType, const char *shaderSourceCode)
 {
