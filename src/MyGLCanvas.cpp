@@ -53,6 +53,8 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
 // deconstruct the object by deleting context
 MyGLCanvas::~MyGLCanvas()
 {
+    vb.~VertexBuffer();
+    ib.~IndexBuffer();
     delete _context;
 }
 
@@ -129,6 +131,8 @@ bool MyGLCanvas::InitGLEW()
 
     return true;
 }
+
+// Event Handling.
 
 void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {

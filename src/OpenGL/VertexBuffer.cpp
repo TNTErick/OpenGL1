@@ -20,7 +20,10 @@ VertexBuffer::VertexBuffer(const void *data, size_t bytes)
 
 VertexBuffer::~VertexBuffer()
 {
+    if (!IsValid())
+        return;
     xy_glError(glDeleteBuffers(1, &mID));
+    mID = 0;
 }
 
 void VertexBuffer::Init(const void *data, size_t bytes)

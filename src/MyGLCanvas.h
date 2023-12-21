@@ -27,6 +27,8 @@ public:
     MyGLCanvas(MyWindow *parent, const wxGLAttributes &canvasAttributes);
     ~MyGLCanvas();
 
+    // bool Destroy() override;
+
     void OnPaint(wxPaintEvent &WXUNUSED(event));
     void OnSize(wxSizeEvent &event);
     void OnTimer(wxTimerEvent &WXUNUSED(event));

@@ -32,6 +32,9 @@ void IndexBuffer::Init(const unsigned int *data, size_t count)
 
 IndexBuffer::~IndexBuffer()
 {
+    if (!IsValid())
+        return;
+    _glErrorLoopThroughAndLog(__LINE__, __FILE__);
     xy_glError(glDeleteBuffers(1, &mID));
     mID = 0;
     mCount = 0;

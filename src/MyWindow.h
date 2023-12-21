@@ -21,6 +21,9 @@ class MyWindow : public wxFrame
 {
 public:
     MyWindow(const wxString &title);
+    ~MyWindow();
+
+    void OnClose(const wxCloseEvent &event);
 
 private:
     MyGLCanvas *canvas;
