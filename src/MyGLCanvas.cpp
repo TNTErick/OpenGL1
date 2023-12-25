@@ -3,7 +3,7 @@
  * File:        src/MyGLCanvas.cpp
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2023-11-15
+ * Modified:    2023-12-25
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */
@@ -12,6 +12,7 @@
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
 #include "OpenGL/Shader.h"
+#include <glm/glm.hpp>
 
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
@@ -23,7 +24,8 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       timer(this),
       vb(),
       ib(),
-      va()
+      va(),
+      shader()
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -60,6 +62,7 @@ MyGLCanvas::~MyGLCanvas()
     vb.~VertexBuffer();
     ib.~IndexBuffer();
     va.~VertexArray();
+    shader.~Shader();
     delete _context;
 }
 
@@ -104,8 +107,9 @@ bool MyGLCanvas::InitOpenGL()
     layout.Push<float>(3);
     va.AddBuffer(vb, layout);
 
-    // shader program
-    shadingProgram = getGLShadingProgram();
+    // compile shader.
+
+    shader.Init();
 
     // unbind everything and return.
     vb.Unbind();
@@ -141,19 +145,16 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 
     xy_glRun(SetCurrent(*_context));
 
-    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
-    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
-
-    xy_glRun(glUseProgram(shadingProgram));
-
+    //    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
+    //    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
+    shader.Bind();
     vb.Bind();
     ib.Bind();
     va.Bind();
 
     // TODO: change this to draw the thingies in the cherno vid.
     //  set the color
-    int colorLocation = glGetUniformLocation(shadingProgram, "u_Color");
-    xy_glRun(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
+    shader.SetUniform4f("u_Color", glm::vec4(r, 0.f, .5f, 1.f));
 
     xy_glRun(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
 

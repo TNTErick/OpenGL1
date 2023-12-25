@@ -32,6 +32,7 @@ ${CMAKE_CURRENT_LIST_DIR}/MyGLCanvas.cpp
 include(OpenGL/CMakeLists.txt)
 
 include(${wxWidgets_USE_FILE})
+include_directories(main PRIVATE ${GLM_INCLUDE_DIRS})
 
 if(APPLE)
     # create bundle on apple compiles
@@ -46,5 +47,4 @@ else()
     add_executable(main WIN32 ${SRCS} main.exe.manifest)
 endif()
 
-target_include_directories(main PRIVATE ${GLM_INCLUDE_DIRS})
 target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES} GLEW::glew_s glm::glm)

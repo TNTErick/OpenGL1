@@ -3,7 +3,7 @@
  * File:        src/openGLDebug.h
  * Author:      TNTErick
  * Created:     2023-11-24
- * Modified:    2023-11-24
+ * Modified:    2023-12-25
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */

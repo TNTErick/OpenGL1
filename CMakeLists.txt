@@ -19,7 +19,7 @@ ExternalProject_Add(${PROJECT_NAME}_core
   DEPENDS
   wxWidgets_external
   GLEW_external
-  # glm::glm
+  #glm
   SOURCE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   CMAKE_ARGS
