@@ -9,8 +9,34 @@
  */
 
 #include "openGLDebug.h"
-void _glErrorLoopThroughAndLog(int lineNum, const char *fileName)
+#include <wx/debug.h>
+#include <GL/glew.h>
+void xy::_glErrorLoopThroughAndLog(int lineNum, const char *fileName)
 {
-    for (GLenum error; (error = glGetError()) != GL_NO_ERROR;)
+    GLenum error = glGetError();
+    if (error == GL_NO_ERROR)
+        return;
+    do
+    {
         wxLogDebug("OpenGL Error in %s, line %d: (0X%04X) %s", fileName, lineNum, error, wxString::FromAscii(gluErrorString(error)));
+    } while ((error = glGetError()) != GL_NO_ERROR);
+
+    wxASSERT_MSG(false, "OpenGL Error");
+}
+
+unsigned int xy::glSizeOf(unsigned int glEnumType)
+{
+    switch (glEnumType)
+    {
+    case GL_UNSIGNED_BYTE:
+        return sizeof(GLbyte);
+    case GL_UNSIGNED_SHORT:
+        return sizeof(GLushort);
+    case GL_UNSIGNED_INT:
+        return sizeof(GLuint);
+    case GL_FLOAT:
+        return sizeof(GLfloat);
+    }
+
+    wxASSERT_MSG(false, wxT("glSizeOf encounter an unknown type."));
 }

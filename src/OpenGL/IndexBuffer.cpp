@@ -23,9 +23,9 @@ IndexBuffer::IndexBuffer() : mID(0),
 
 void IndexBuffer::Init(const unsigned int *data, size_t count)
 {
-    xy_glError(glGenBuffers(1, &mID));
+    xy_glRun(glGenBuffers(1, &mID));
     Bind();
-    // xy_glError(
+    // xy_glRun(
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
     //);
 }
@@ -34,18 +34,17 @@ IndexBuffer::~IndexBuffer()
 {
     if (!IsValid())
         return;
-    _glErrorLoopThroughAndLog(__LINE__, __FILE__);
-    xy_glError(glDeleteBuffers(1, &mID));
+    xy_glRun(glDeleteBuffers(1, &mID));
     mID = 0;
     mCount = 0;
 }
 
 void IndexBuffer::Bind() const
 {
-    xy_glError(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mID));
+    xy_glRun(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mID));
 }
 
 void IndexBuffer::Unbind() const
 {
-    xy_glError(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    xy_glRun(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }

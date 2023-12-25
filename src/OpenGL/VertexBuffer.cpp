@@ -22,23 +22,23 @@ VertexBuffer::~VertexBuffer()
 {
     if (!IsValid())
         return;
-    xy_glError(glDeleteBuffers(1, &mID));
+    xy_glRun(glDeleteBuffers(1, &mID));
     mID = 0;
 }
 
 void VertexBuffer::Init(const void *data, size_t bytes)
 {
-    xy_glError(glGenBuffers(1, &mID));
+    xy_glRun(glGenBuffers(1, &mID));
     Bind();
-    xy_glError(glBufferData(GL_ARRAY_BUFFER, bytes, data, GL_STATIC_DRAW));
+    xy_glRun(glBufferData(GL_ARRAY_BUFFER, bytes, data, GL_STATIC_DRAW));
 }
 
 void VertexBuffer::Bind() const
 {
-    xy_glError(glBindBuffer(GL_ARRAY_BUFFER, mID));
+    xy_glRun(glBindBuffer(GL_ARRAY_BUFFER, mID));
 }
 
 void VertexBuffer::Unbind() const
 {
-    xy_glError(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    xy_glRun(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

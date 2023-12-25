@@ -18,6 +18,7 @@
 #include "OpenGL/openGLDebug.h"
 #include "OpenGL/VertexBuffer.h"
 #include "OpenGL/IndexBuffer.h"
+#include "OpenGL/VertexArray.h"
 
 // will be included in the cpp file.
 class MyWindow;
@@ -41,7 +42,8 @@ private:
     wxGLContext *_context;
     VertexBuffer vb;
     IndexBuffer ib;
-    GLid_t vao, shadingProgram;
+    VertexArray va;
+    GLid_t shadingProgram;
     float r, incr;
     wxTimer timer;
 };

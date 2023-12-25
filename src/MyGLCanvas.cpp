@@ -20,7 +20,10 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       _context(nullptr),
       r(0.f),
       incr(.05f),
-      timer(this)
+      timer(this),
+      vb(),
+      ib(),
+      va()
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -36,6 +39,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
             this);
         delete _context;
         _context = nullptr;
+        wxASSERT_MSG(false, "OpenGL context is not initialized.");
     }
 
     // timer.
@@ -55,6 +59,7 @@ MyGLCanvas::~MyGLCanvas()
 {
     vb.~VertexBuffer();
     ib.~IndexBuffer();
+    va.~VertexArray();
     delete _context;
 }
 
@@ -82,11 +87,6 @@ bool MyGLCanvas::InitOpenGL()
 
     // initialise data used for rendering.
 
-    // vao
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    // vbo
     float vertices[] = {
         -.5f, -.5f, 0.f,
         .5f, -.5f, 0.f,
@@ -94,15 +94,15 @@ bool MyGLCanvas::InitOpenGL()
         -.5f, .5f, 0.f};
     vb.Init(vertices, sizeof(vertices));
 
-    // ibo
     unsigned int indices[] = {
         0, 1, 2,
         2, 3, 0};
     ib.Init(indices, 6);
 
-    // attrib array
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
+    va.Init();
+    VertexBufferLayout layout;
+    layout.Push<float>(3);
+    va.AddBuffer(vb, layout);
 
     // shader program
     shadingProgram = getGLShadingProgram();
@@ -110,9 +110,7 @@ bool MyGLCanvas::InitOpenGL()
     // unbind everything and return.
     vb.Unbind();
     ib.Unbind();
-    glBindVertexArray(0);
-    _glErrorLoopThroughAndLog(__LINE__, __FILE__);
-
+    va.Unbind();
     isOpenGLInitialised = true;
     return true;
 }
@@ -136,32 +134,28 @@ bool MyGLCanvas::InitGLEW()
 
 void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
-    _glErrorLoopThroughAndLog(__LINE__, __FILE__);
     wxPaintDC dc(this);
 
     if (!isOpenGLInitialised)
         return;
 
-    xy_glError(SetCurrent(*_context));
+    xy_glRun(SetCurrent(*_context));
 
-    xy_glError(glClearColor(0.f, 0.f, 0.f, 1.f));
-    xy_glError(glClear(GL_COLOR_BUFFER_BIT));
+    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
+    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
 
-    xy_glError(glUseProgram(shadingProgram));
+    xy_glRun(glUseProgram(shadingProgram));
 
     vb.Bind();
     ib.Bind();
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    xy_glError(glBindVertexArray(vao));
+    va.Bind();
 
     // TODO: change this to draw the thingies in the cherno vid.
     //  set the color
     int colorLocation = glGetUniformLocation(shadingProgram, "u_Color");
-    xy_glError(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
+    xy_glRun(glUniform4f(colorLocation, r, 0.f, .5f, 1.f));
 
-    xy_glError(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
+    xy_glRun(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
 
     r += incr;
     if (r >= 1.f)
