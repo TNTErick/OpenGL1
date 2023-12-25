@@ -11,7 +11,7 @@
 #include <wx/log.h>
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
-#include "OpenGL/shaders.h"
+#include "OpenGL/Shader.h"
 
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)

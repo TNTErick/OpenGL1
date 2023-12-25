@@ -8,25 +8,28 @@
  *
  */
 
-constexpr const char vertexShaderSource[]=R"(
-#version 330 core
-
-layout (location = 0) in vec3 pos;
-void main()
+namespace
 {
+    constexpr const char vertexShaderSource[] = R"(
+    #version 330 core
+
+    layout (location = 0) in vec3 pos;
+    void main()
+    {
     gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
-};
+    };
 
-)";
-constexpr const char fragmentShaderSource[]=R"(
-#version 330 core
+    )";
+    constexpr const char fragmentShaderSource[] = R"(
+    #version 330 core
 
-uniform vec4 u_Color;
-layout (location = 0) out vec4 color;
+    uniform vec4 u_Color;
+    layout (location = 0) out vec4 color;
 
-void main()
-{
+    void main()
+    {
     color = u_Color;
-};
+    };
 
-)";
+    )";
+}

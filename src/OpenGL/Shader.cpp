@@ -8,10 +8,12 @@
  *
  */
 
-#include "shaders.h"
+#include "Shader.h"
 #include <fstream>
 #include <string>
 #include "2dshaders.h"
+#include <alloca.h>
+#include "openGLDebug.h"
 
 GLid_t getShader(GLenum shaderType, const char *shaderSourceCode)
 {
@@ -29,7 +31,6 @@ GLid_t getShader(GLenum shaderType, const char *shaderSourceCode)
         char *message = (char *)alloca(length + 1);
         glGetShaderInfoLog(id, length, nullptr, message);
         wxLogDebug("Shader is Compiled with Failure: %s", message);
-        free(message);
     }
 
     return id;
