@@ -11,7 +11,6 @@
 #include <wx/log.h>
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
-#include "OpenGL/Shader.h"
 #include <glm/glm.hpp>
 
 // init the canvas with the wxGLContext.
@@ -25,7 +24,8 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       vb(),
       ib(),
       va(),
-      shader()
+      shader(),
+      renderer()
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -103,7 +103,7 @@ bool MyGLCanvas::InitOpenGL()
     ib.Init(indices, 6);
 
     va.Init();
-    VertexBufferLayout layout;
+    xy::VertexBufferLayout layout;
     layout.Push<float>(3);
     va.AddBuffer(vb, layout);
 
@@ -140,23 +140,20 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
     wxPaintDC dc(this);
 
-    if (!isOpenGLInitialised)
+    if (!isOpenGLInitialised || !vb.IsValid() || !ib.IsValid() || !shader.isValid() || !va.isValid())
         return;
 
     xy_glRun(SetCurrent(*_context));
 
+    //  set the color
+    shader.SetUniform4f("uColor", glm::vec4(r, 0.f, .5f, 1.f));
     //    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
     //    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
-    shader.Bind();
-    vb.Bind();
-    ib.Bind();
     va.Bind();
 
     // TODO: change this to draw the thingies in the cherno vid.
-    //  set the color
-    shader.SetUniform4f("u_Color", glm::vec4(r, 0.f, .5f, 1.f));
 
-    xy_glRun(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
+    renderer.Draw(vb, ib, shader);
 
     r += incr;
     if (r >= 1.f)

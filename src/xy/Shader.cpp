@@ -3,7 +3,7 @@
  * File:        src/Shader.cpp
  * Author:      TNTErick
  * Created:     2023-11-16
- * Modified:    2023-12-25
+ * Modified:    2023-12-26
  * Description: This file implements the shaders that the program needs.
  * Change:      2023-12-25 shaders.cpp -> Shader.cpp
  */
@@ -63,12 +63,12 @@ GLid_t getGLShadingProgram()
     return shadingProgram;
 }
 
-Shader::Shader()
+xy::Shader::Shader()
     : mID(0)
 {
 }
 
-Shader::~Shader()
+xy::Shader::~Shader()
 {
     if (!isValid())
         return;
@@ -76,29 +76,31 @@ Shader::~Shader()
     mID = 0;
 }
 
-void Shader::Init()
+void xy::Shader::Init()
 {
     xy_glRun(mID = getGLShadingProgram());
 }
 
-void Shader::Bind() const
+void xy::Shader::Bind() const
 {
     xy_glRun(glUseProgram(mID));
 }
 
-void Shader::Unbind() const
+void xy::Shader::Unbind() const
 {
     xy_glRun(glUseProgram(0));
 }
 
-void Shader::SetUniform4f(const std::string &name, const glm::vec4 &value) const
+void xy::Shader::SetUniform4f(const std::string &name, const glm::vec4 &value) const
 {
     GLint i = GetUniformLocation(name);
     xy_glRun(glUniform4f(i, value.x, value.y, value.z, value.w));
 }
 
-GLint Shader::GetUniformLocation(const std::string &name) const
+GLint xy::Shader::GetUniformLocation(const std::string &name) const
 {
     xy_glRun(GLint i = glGetUniformLocation(mID, name.c_str()));
+    if (i == -1)
+        wxASSERT_MSG(false, "Invalid Uniform Name!");
     return i;
 }

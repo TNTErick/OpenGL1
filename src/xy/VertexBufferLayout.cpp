@@ -12,10 +12,10 @@
 #include "VertexBufferLayout.h"
 
 template <typename T>
-void VertexBufferLayout::Push(unsigned int count, bool normalised) { static_assert(false); }
+void xy::VertexBufferLayout::Push(unsigned int count, bool normalised) { static_assert(false); }
 
 template <>
-void VertexBufferLayout::Push<float>(unsigned int count, bool normalised)
+void xy::VertexBufferLayout::Push<float>(unsigned int count, bool normalised)
 {
     mElements.push_back({GL_FLOAT, count, normalised});
 }

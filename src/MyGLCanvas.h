@@ -15,18 +15,19 @@
 #include <wx/wx.h>
 #include <GL/glew.h>
 #include <wx/glcanvas.h>
-#include "OpenGL/openGLDebug.h"
-#include "OpenGL/VertexBuffer.h"
-#include "OpenGL/IndexBuffer.h"
-#include "OpenGL/VertexArray.h"
-#include "OpenGL/Shader.h"
+#include "xy/openGLDebug.h"
+#include "xy/VertexBuffer.h"
+#include "xy/IndexBuffer.h"
+#include "xy/VertexArray.h"
+#include "xy/Shader.h"
+#include "xy/Renderer.h"
 
 // will be included in the cpp file.
 class MyWindow;
 class MyGLCanvas : public wxGLCanvas
 {
 public:
-    MyGLCanvas(MyWindow *parent, const wxGLAttributes &canvasAttributes);
+    MyGLCanvas(MyWindow *, const wxGLAttributes &);
     ~MyGLCanvas();
 
     // bool Destroy() override;
@@ -41,10 +42,11 @@ private:
     bool isOpenGLInitialised;
 
     wxGLContext *_context;
-    VertexBuffer vb;
-    IndexBuffer ib;
-    VertexArray va;
-    Shader shader;
+    xy::VertexBuffer vb;
+    xy::IndexBuffer<> ib; // default type is unsigned int
+    xy::VertexArray va;
+    xy::Shader shader;
+    xy::Renderer renderer;
     float r, incr;
     wxTimer timer;
 };

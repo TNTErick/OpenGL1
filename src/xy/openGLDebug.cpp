@@ -3,7 +3,7 @@
  * File:        src/openGLDebug.h
  * Author:      TNTErick
  * Created:     2023-11-24
- * Modified:    2023-12-25
+ * Modified:    2023-12-26
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */
@@ -39,4 +39,16 @@ unsigned int xy::glSizeOf(unsigned int glEnumType)
     }
 
     wxASSERT_MSG(false, wxT("glSizeOf encounter an unknown type."));
+}
+
+template <typename T>
+static constexpr GLenum glEnumTypeOf()
+{
+    wxASSERT_MSG(false, wxT("Unknown Type Encountered. Please add the type down below this page."));
+}
+
+template <>
+static constexpr GLenum glEnumTypeOf<GLuint>()
+{
+    return GL_UNSIGNED_INT;
 }

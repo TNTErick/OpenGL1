@@ -3,12 +3,13 @@
  * File:        src/VertexBuffer.cpp
  * Author:      TNTErick
  * Created:     2023-12-20
- * Modified:    2023-12-21
+ * Modified:    2023-12-26
  * Description: This class provides wrapping for vertex buffers in opengl.
  *
  */
 
 #include "VertexBuffer.h"
+using namespace xy;
 
 VertexBuffer::VertexBuffer() : mID(0) {}
 

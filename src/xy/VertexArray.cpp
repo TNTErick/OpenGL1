@@ -3,13 +3,14 @@
  * File:        src/VertexArray.cpp
  * Author:      TNTErick
  * Created:     2023-12-25
- * Modified:    2023-12-25
+ * Modified:    2023-12-26
  * Description: This class provides wrapping for vertex attrib arrays in opengl.
  *
  */
 #include "VertexArray.h"
 #include <vector>
 #include "openGLDebug.h"
+using namespace xy;
 
 VertexArray::VertexArray() : mID(0) {}
 

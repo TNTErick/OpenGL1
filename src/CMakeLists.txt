@@ -29,7 +29,7 @@ ${CMAKE_CURRENT_LIST_DIR}/MyWindow.cpp
 ${CMAKE_CURRENT_LIST_DIR}/MyGLCanvas.cpp
 )
 
-include(OpenGL/CMakeLists.txt)
+include(xy/CMakeLists.txt)
 
 include(${wxWidgets_USE_FILE})
 include_directories(main PRIVATE ${GLM_INCLUDE_DIRS})
