@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/Renderer.h
+ * File:        src/xy/Renderer.h
  * Author:      TNTErick
  * Created:     2023-12-21
  * Modified:    2023-12-26
@@ -10,10 +10,10 @@
 
 #include "Renderer.h"
 
-void xy::Renderer::Draw(const xy::VertexBuffer &vertices, const xy::generic::IndexBuffer &indices, const xy::Shader &shader) const
+void xy::Renderer::Draw(const xy::VertexArray &vertexArray, const xy::generic::IndexBuffer &indices, const xy::Shader &shader) const
 {
     shader.Bind();
-    vertices.Bind();
+    vertexArray.Bind();
     indices.Bind();
     xy_glRun(glDrawElements(GL_TRIANGLES, indices.getSize(), indices.getGLenumType(), (void *) 0));
 }

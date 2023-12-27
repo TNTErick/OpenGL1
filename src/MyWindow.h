@@ -14,6 +14,7 @@
 #define __XY_MY_WINDOW_H__
 
 #include <wx/wx.h>
+#include <wx/menu.h>
 
 class MyGLCanvas; // include this class in the cpp file.
 
@@ -23,10 +24,11 @@ public:
     MyWindow(const wxString &title);
     ~MyWindow();
 
-    void OnClose(const wxCloseEvent &event);
+    void OnClose(const wxEvent &WXUNUSED(event));
 
 private:
     MyGLCanvas *canvas;
+    wxMenuBar *menuBar;
 };
 
 #endif // ifndef __XY_MY_WINDOW_H__

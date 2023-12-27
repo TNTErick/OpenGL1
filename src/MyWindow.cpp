@@ -3,8 +3,8 @@
  * File:        src/MyWindow.cpp
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2023-12-21
- * Description: `MyWin-dow` defines the window frame of the app.
+ * Modified:    2023-12-26
+ * Description: `MyWindow` defines the window frame of the app.
  *
  */
 
@@ -13,8 +13,22 @@
 
 MyWindow::MyWindow(const wxString &title)
     : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxDefaultSize),
-      canvas(nullptr)
+      canvas(nullptr),
+      menuBar(nullptr)
 {
+    // menubar
+    menuBar = new wxMenuBar;
+    wxMenu *helpMenu = new wxMenu;
+    helpMenu->Append(wxID_ABOUT);
+    helpMenu->Append(wxID_EXIT);
+
+    helpMenu->Bind(wxEVT_MENU, MyWindow::OnClose, wxID_EXIT, wxID_EXIT, this);
+    menuBar->Append(helpMenu, wxT("&Help"));
+    SetMenuBar(menuBar);
+
+    // Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(MyWindow::OnClose), nullptr, this);
+
+    // my gl canvas.
     wxGLAttributes attrs;
     attrs.PlatformDefaults().Defaults().EndList();
 
@@ -23,7 +37,7 @@ MyWindow::MyWindow(const wxString &title)
         canvas = new MyGLCanvas(this, attrs);
         canvas->SetMinSize(FromDIP(wxSize(640, 480)));
     }
-    // Bind(wxEVT_CLOSE_WINDOW, &MyWindow::OnClose, this);
+    Bind(wxEVT_CLOSE_WINDOW, &MyWindow::OnClose, this);
 }
 
 MyWindow::~MyWindow()
@@ -31,7 +45,7 @@ MyWindow::~MyWindow()
     Close();
 }
 
-void MyWindow::OnClose(const wxCloseEvent &event)
+void MyWindow::OnClose(const wxEvent &WXUNUSED(event))
 {
     /*
     if (event.CanVeto())
@@ -45,6 +59,6 @@ void MyWindow::OnClose(const wxCloseEvent &event)
     */
 
     //  wxWidget will fire the close event and destroy the canvas.
-    //canvas->Destroy();
+    // canvas->Destroy();
     Destroy();
 }

@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/OpenGL/IndexBuffer.cpp
+ * File:        src/xy/IndexBuffer.cpp
  * Author:      TNTErick
  * Created:     2023-12-20
  * Modified:    2023-12-26

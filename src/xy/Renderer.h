@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/Renderer.h
+ * File:        src/xy/Renderer.h
  * Author:      TNTErick
  * Created:     2023-12-21
  * Modified:    2023-12-26
@@ -22,6 +22,6 @@ namespace xy
     {
     private:
     public:
-        void Draw(const VertexBuffer &vertices, generic::IndexBuffer const &indices, const Shader &shader) const;
+        void Draw(const VertexArray &va, generic::IndexBuffer const &indices, const Shader &shader) const;
     };
 }

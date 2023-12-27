@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/Shader.h
+ * File:        src/xy/Shader.h
  * Author:      TNTErick
  * Created:     2023-11-16
  * Modified:    2023-12-26

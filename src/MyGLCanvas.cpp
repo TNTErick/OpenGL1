@@ -73,6 +73,7 @@ bool MyGLCanvas::InitOpenGL()
         return false;
     SetCurrent(*_context);
 
+    xy_glRun(glEnable(GL_DEBUG_OUTPUT));
     // init opengl functions
     if (!InitGLEW())
     {
@@ -112,7 +113,7 @@ bool MyGLCanvas::InitOpenGL()
     shader.Init();
 
     // unbind everything and return.
-    vb.Unbind();
+    // vb.Unbind();
     ib.Unbind();
     va.Unbind();
     isOpenGLInitialised = true;
@@ -146,14 +147,14 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
     xy_glRun(SetCurrent(*_context));
 
     //  set the color
-    shader.SetUniform4f("uColor", glm::vec4(r, 0.f, .5f, 1.f));
-    //    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
-    //    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
-    va.Bind();
+    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
+    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
+    shader.Bind();
 
     // TODO: change this to draw the thingies in the cherno vid.
+    shader.SetUniform4f("uColor", glm::vec4(r, .5f, .7f, 1.f));
 
-    renderer.Draw(vb, ib, shader);
+    renderer.Draw(va, ib, shader);
 
     r += incr;
     if (r >= 1.f)

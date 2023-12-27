@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/OpenGL/2d.shaders
+ * File:        src/xy/2d.shaders
  * Author:      TNTErick
  * Created:     2023-12-13
  * Modified:    2023-12-26

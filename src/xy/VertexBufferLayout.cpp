@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/VertexBufferLayout.h
+ * File:        src/xy/VertexBufferLayout.h
  * Author:      TNTErick
  * Created:     2023-12-21
  * Modified:    2023-12-21

@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/Shader.cpp
+ * File:        src/xy/Shader.cpp
  * Author:      TNTErick
  * Created:     2023-11-16
  * Modified:    2023-12-26
@@ -94,7 +94,7 @@ void xy::Shader::Unbind() const
 void xy::Shader::SetUniform4f(const std::string &name, const glm::vec4 &value) const
 {
     GLint i = GetUniformLocation(name);
-    xy_glRun(glUniform4f(i, value.x, value.y, value.z, value.w));
+    xy_glRun(glUniform4f(i, (GLfloat)value.x, (GLfloat)value.y, (GLfloat)value.z, (GLfloat)value.w));
 }
 
 GLint xy::Shader::GetUniformLocation(const std::string &name) const

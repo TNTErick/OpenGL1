@@ -1,6 +1,6 @@
 /*
  *
- * File:        src/OpenGL/VertexBuffer.h
+ * File:        src/xy/VertexBuffer.h
  * Author:      TNTErick
  * Created:     2023-12-20
  * Modified:    2023-12-26
