@@ -8,6 +8,7 @@
  *
  */
 
+#pragma once
 namespace
 {
     constexpr const char vertexShaderSource[] = R"(

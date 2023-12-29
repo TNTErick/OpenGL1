@@ -10,9 +10,6 @@
  */
 
 #pragma once
-#ifndef __XY_MY_WINDOW_H__
-#define __XY_MY_WINDOW_H__
-
 #include <wx/wx.h>
 #include <wx/menu.h>
 
@@ -31,4 +28,3 @@ private:
     wxMenuBar *menuBar;
 };
 
-#endif // ifndef __XY_MY_WINDOW_H__

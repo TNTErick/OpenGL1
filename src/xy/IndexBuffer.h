@@ -9,9 +9,6 @@
  */
 
 #pragma once
-#ifndef __XY_INDEX_BUFFER_H
-#define __XY_INDEX_BUFFER_H
-
 #include "openGLDebug.h"
 
 namespace xy
@@ -51,5 +48,3 @@ namespace xy
         void Init(const data_t *data, size_t count);
     };
 } //
-
-#endif //__XY_INDEX_BUFFER_H

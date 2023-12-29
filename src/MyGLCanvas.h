@@ -9,8 +9,6 @@
  */
 
 #pragma once
-#ifndef __XY_MY_GL_CANVAS_H__
-#define __XY_MY_GL_CANVAS_H__
 
 #include <wx/wx.h>
 #include <GL/glew.h>
@@ -50,7 +48,5 @@ private:
     float r, incr;
     wxTimer timer;
 };
-
-#endif
 
 // finished?

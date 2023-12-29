@@ -9,8 +9,6 @@
  */
 
 #pragma once
-#ifndef __XY_MY_APP_H__
-#define __XY_MY_APP_H__
 
 #include <wx/wx.h>
 
@@ -21,6 +19,5 @@ public:
     bool OnInit() wxOVERRIDE;
 };
 
-#endif
 
 // FINISHED

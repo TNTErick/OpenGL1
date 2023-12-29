@@ -8,8 +8,6 @@
  *
  */
 #pragma once
-#ifndef __XY_OPENGL_DEBUG_H
-#define __XY_OPENGL_DEBUG_H
 #include <wx/wx.h>
 #include <GL/glew.h>
 
@@ -29,5 +27,3 @@ namespace xy
 }
 
 #define xy_glRun(x) while (glGetError());x;xy::_glErrorLoopThroughAndLog(__LINE__, __FILE__)
-
-#endif
