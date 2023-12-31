@@ -22,7 +22,7 @@ MyWindow::MyWindow(const wxString &title)
     helpMenu->Append(wxID_ABOUT);
     helpMenu->Append(wxID_EXIT);
 
-    helpMenu->Bind(wxEVT_MENU, MyWindow::OnClose, wxID_EXIT, wxID_EXIT, this);
+    // helpMenu->Bind(wxEVT_MENU, &MyWindow::OnClose, wxID_EXIT, wxID_EXIT, this);
     menuBar->Append(helpMenu, wxT("&Help"));
     SetMenuBar(menuBar);
 

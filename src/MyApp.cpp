@@ -19,6 +19,7 @@ bool MyApp::OnInit()
     if (!wxApp::OnInit())
         return false;
 
+    wxInitAllImageHandlers(); // to load image formats like PNG.
     MyWindow *window = new MyWindow("Test Title");
 
     if (window == nullptr)
