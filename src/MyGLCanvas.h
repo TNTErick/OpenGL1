@@ -19,6 +19,7 @@
 #include "xy/VertexArray.h"
 #include "xy/Shader.h"
 #include "xy/Renderer.h"
+#include "xy/Texture.h"
 
 // will be included in the cpp file.
 class MyWindow;
@@ -45,6 +46,7 @@ private:
     xy::VertexArray va;
     xy::Shader shader;
     xy::Renderer renderer;
+    xy::Texture tex;
     float r, incr;
     wxTimer timer;
 };

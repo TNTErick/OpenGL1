@@ -14,22 +14,29 @@ namespace
     constexpr const char vertexShaderSource[] = R"(
     #version 330 core
 
-    layout (location = 0) in vec3 pos;
+    layout (location = 0) in vec4 pos;
+    layout (location = 1) in vec2 texCoord;
+
+    out vec2 vTexCoord;
+
     void main()
     {
-    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);
+        gl_Position = pos;
+        vTexCoord = texCoord;
     };
 
     )";
     constexpr const char fragmentShaderSource[] = R"(
     #version 330 core
 
-    uniform vec4 uColor;
+    in vec2 vTexCoord;
+    uniform sampler2D uTexture;
+
     layout (location = 0) out vec4 color;
 
     void main()
     {
-    color = uColor;
+        color = texture(uTexture, vTexCoord);
     };
 
     )";

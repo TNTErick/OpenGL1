@@ -10,6 +10,7 @@
 
 #include "MyApp.h"
 #include "MyWindow.h"
+#include <wx/imagpng.h>
 
 MyApp::MyApp() : wxApp() {}
 
@@ -19,7 +20,9 @@ bool MyApp::OnInit()
     if (!wxApp::OnInit())
         return false;
 
-    wxInitAllImageHandlers(); // to load image formats like PNG.
+    // wxInitAllImageHandlers(); // to load image formats like PNG.
+    wxImage::AddHandler(new wxPNGHandler);
+
     MyWindow *window = new MyWindow("Test Title");
 
     if (window == nullptr)

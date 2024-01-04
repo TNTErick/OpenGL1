@@ -16,7 +16,7 @@ VertexArray::VertexArray() : mID(0) {}
 
 VertexArray::~VertexArray()
 {
-    if (!isValid())
+    if (!IsValid())
         return;
 
     xy_glRun(glDeleteVertexArrays(1, &mID));
@@ -26,7 +26,7 @@ VertexArray::~VertexArray()
 bool VertexArray::Init()
 {
     xy_glRun(glGenVertexArrays(1, &mID));
-    return isValid();
+    return IsValid();
 }
 
 void VertexArray::Bind() const

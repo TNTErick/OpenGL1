@@ -60,6 +60,23 @@ GLid_t getGLShadingProgram()
     }
     glDeleteShader(vertexShader), glDeleteShader(fragmentShader);
 
+    if (_DEBUG)
+    {
+        int count;
+        glGetProgramiv(shadingProgram, GL_ACTIVE_UNIFORMS, &count);
+        wxLogDebug("There are %d uniforms:", count);
+        GLuint i;
+        GLsizei len, size;
+        GLenum type;
+        char buffer[512];
+        memset(buffer, 0, sizeof(buffer));
+
+        for (i = 0; i < count; i++)
+        {
+            glGetActiveUniform(shadingProgram, i, 511, &len, &size, &type, buffer);
+            wxLogDebug("\tUniform #%03d Type: %X Name: %s", i, type, buffer);
+        }
+    }
     return shadingProgram;
 }
 
@@ -70,7 +87,7 @@ xy::Shader::Shader()
 
 xy::Shader::~Shader()
 {
-    if (!isValid())
+    if (!IsValid())
         return;
     xy_glRun(glDeleteProgram(mID));
     mID = 0;
@@ -95,6 +112,12 @@ void xy::Shader::SetUniform4f(const std::string &name, const glm::vec4 &value) c
 {
     GLint i = GetUniformLocation(name);
     xy_glRun(glUniform4f(i, (GLfloat)value.x, (GLfloat)value.y, (GLfloat)value.z, (GLfloat)value.w));
+}
+
+void xy::Shader::SetUniform1i(const std::string &name, int val) const
+{
+    GLint i = GetUniformLocation(name);
+    xy_glRun(glUniform1i(i, val));
 }
 
 GLint xy::Shader::GetUniformLocation(const std::string &name) const

@@ -8,4 +8,5 @@ list(APPEND SRCS
     ${CMAKE_CURRENT_LIST_DIR}/VertexArray.cpp
     ${CMAKE_CURRENT_LIST_DIR}/VertexBuffer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/VertexBufferLayout.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Texture.cpp
 )

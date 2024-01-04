@@ -25,7 +25,8 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       ib(),
       va(),
       shader(),
-      renderer()
+      renderer(),
+      tex()
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -62,6 +63,7 @@ MyGLCanvas::~MyGLCanvas()
     vb.~VertexBuffer();
     ib.~IndexBuffer();
     va.~VertexArray();
+    tex.~Texture();
     shader.~Shader();
     delete _context;
 }
@@ -92,10 +94,11 @@ bool MyGLCanvas::InitOpenGL()
     // initialise data used for rendering.
 
     float vertices[] = {
-        -.5f, -.5f, 0.f,
-        .5f, -.5f, 0.f,
-        .5f, .5f, 0.f,
-        -.5f, .5f, 0.f};
+        //  x,y in space; x,y in texture coordinates
+        -.5f, -.5f, 0.f, 0.f,
+        .5f, -.5f, 1.f, 0.f,
+        .5f, .5f, 1.f, 1.f,
+        -.5f, .5f, 0.f, 1.f};
     vb.Init(vertices, sizeof(vertices));
 
     unsigned int indices[] = {
@@ -105,12 +108,18 @@ bool MyGLCanvas::InitOpenGL()
 
     va.Init();
     xy::VertexBufferLayout layout;
-    layout.Push<float>(3);
+    layout.Push<float>(2); // x y
+    layout.Push<float>(2); // texture pos
     va.AddBuffer(vb, layout);
 
     // compile shader.
-
     shader.Init();
+    shader.Bind();
+
+    // texture
+    tex.Init("mojang.png");
+    tex.Bind(0);
+    shader.SetUniform1i("uTexture", 0);
 
     // unbind everything and return.
     // vb.Unbind();
@@ -141,9 +150,10 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
     wxPaintDC dc(this);
 
-    if (!isOpenGLInitialised || !vb.IsValid() || !ib.IsValid() || !shader.isValid() || !va.isValid())
+    if (!isOpenGLInitialised || !vb.IsValid() || !ib.IsValid() || !shader.IsValid() || !va.IsValid() || !tex.IsValid())
         return;
 
+    tex.Bind();
     xy_glRun(SetCurrent(*_context));
 
     //  set the color
@@ -152,7 +162,7 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
     shader.Bind();
 
     // TODO: change this to draw the thingies in the cherno vid.
-    shader.SetUniform4f("uColor", glm::vec4(r, .5f, .7f, 1.f));
+    // shader.SetUniform4f("uColor", glm::vec4(r, .5f, .7f, 1.f));
 
     renderer.Draw(va, ib, shader);
 

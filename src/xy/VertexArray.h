@@ -23,7 +23,7 @@ namespace xy
         ~VertexArray();
 
         bool Init();
-        inline bool isValid() const { return mID != 0; }
+        inline bool IsValid() const { return mID != 0; }
 
         void Bind() const;
         void Unbind() const;

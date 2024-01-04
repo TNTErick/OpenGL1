@@ -29,6 +29,8 @@ ${CMAKE_CURRENT_LIST_DIR}/MyWindow.cpp
 ${CMAKE_CURRENT_LIST_DIR}/MyGLCanvas.cpp
 )
 
+message("${CMAKE_CURRENT_LIST_DIR}, ${CMAKE_BINARY_DIR}")
+
 include(xy/CMakeLists.txt)
 
 include(${wxWidgets_USE_FILE})

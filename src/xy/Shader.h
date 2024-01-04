@@ -27,8 +27,9 @@ namespace xy
         void Unbind() const;
         void Init();
 
-        inline bool isValid() const { return mID != 0; }
+        inline bool IsValid() const { return mID != 0; }
         void SetUniform4f(const std::string &name, const glm::vec4 &value) const;
+        void SetUniform1i(const std::string &name, int i) const;
 
     private:
         GLint GetUniformLocation(const std::string &name) const;
