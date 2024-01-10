@@ -81,7 +81,8 @@ GLid_t getGLShadingProgram()
 }
 
 xy::Shader::Shader()
-    : mID(0)
+    : mID(0),
+      mUniforms()
 {
 }
 
@@ -108,22 +109,34 @@ void xy::Shader::Unbind() const
     xy_glRun(glUseProgram(0));
 }
 
-void xy::Shader::SetUniform4f(const std::string &name, const glm::vec4 &value) const
-{
-    GLint i = GetUniformLocation(name);
-    xy_glRun(glUniform4f(i, (GLfloat)value.x, (GLfloat)value.y, (GLfloat)value.z, (GLfloat)value.w));
-}
-
-void xy::Shader::SetUniform1i(const std::string &name, int val) const
-{
-    GLint i = GetUniformLocation(name);
-    xy_glRun(glUniform1i(i, val));
-}
-
-GLint xy::Shader::GetUniformLocation(const std::string &name) const
+GLint xy::Shader::GetUniformLocation(const std::string &name)
 {
     xy_glRun(GLint i = glGetUniformLocation(mID, name.c_str()));
     if (i == -1)
         wxASSERT_MSG(false, "Invalid Uniform Name!");
     return i;
+}
+
+template<typename T>
+void xy::Shader::SetUniform(const std::string &, const T&)
+{
+    wxASSERT_MSG(false, "Invalid Uniform Type!");
+}
+
+template<>
+void xy::Shader::SetUniform<glm::vec4>(const std::string &name, const glm::vec4& value)
+{
+    xy_glRun(glUniform4f(GetUniformLocation(name), (GLfloat)value.x, (GLfloat)value.y, (GLfloat)value.z, (GLfloat)value.w));
+}
+
+template<>
+void xy::Shader::SetUniform<int>(const std::string &name, const int& i)
+{
+    xy_glRun(glUniform1i(GetUniformLocation(name), i));
+}
+
+template<>
+void xy::Shader::SetUniform<glm::mat4>(const std::string &name, const glm::mat4& matrix)
+{
+    xy_glRun(glUniformMatrix4fv(GetUniformLocation(name),1, GL_FALSE, &matrix[0][0]));
 }

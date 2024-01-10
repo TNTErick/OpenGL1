@@ -18,5 +18,6 @@ template <>
 void xy::VertexBufferLayout::Push<float>(unsigned int count, bool normalised)
 {
     mElements.push_back({GL_FLOAT, count, normalised});
+    mStride += sizeof(float) * count;
 }
 // TODO: implement different types of Push that is defined in glEnumType.

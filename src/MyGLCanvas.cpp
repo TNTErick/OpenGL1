@@ -12,6 +12,7 @@
 #include "MyGLCanvas.h"
 #include "MyWindow.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
@@ -95,15 +96,22 @@ bool MyGLCanvas::InitOpenGL()
 
     float vertices[] = {
         //  x,y in space; x,y in texture coordinates
-        -.5f, -.5f, 0.f, 0.f,
-        .5f, -.5f, 1.f, 0.f,
         .5f, .5f, 1.f, 1.f,
+        .5f, -.5f, 1.f, 0.f,
+        -.5f, -.5f, 0.f, 0.f,
         -.5f, .5f, 0.f, 1.f};
+
     vb.Init(vertices, sizeof(vertices));
 
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0};
+    unsigned int indices[] =
+        {
+            0,
+            1,
+            2,
+            2,
+            3,
+            0,
+        };
     ib.Init(indices, 6);
 
     va.Init();
@@ -117,14 +125,17 @@ bool MyGLCanvas::InitOpenGL()
     shader.Bind();
 
     // texture
-    tex.Init("mojang.png");
+    tex.Init("uv-test.png");
     tex.Bind(0);
-    shader.SetUniform1i("uTexture", 0);
+    shader.SetUniform<int>("uTexture", 0);
+
+    // Blend.
+    xy_glRun(glEnable(GL_BLEND));
+    xy_glRun(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     // unbind everything and return.
-    // vb.Unbind();
+    vb.Unbind();
     ib.Unbind();
-    va.Unbind();
     isOpenGLInitialised = true;
     return true;
 }
@@ -148,15 +159,18 @@ bool MyGLCanvas::InitGLEW()
 
 void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
-    wxPaintDC dc(this);
+    // wxPaintDC dc(this);
 
+    SetCurrent(*_context);
     if (!isOpenGLInitialised || !vb.IsValid() || !ib.IsValid() || !shader.IsValid() || !va.IsValid() || !tex.IsValid())
         return;
 
     tex.Bind();
-    xy_glRun(SetCurrent(*_context));
+    va.Bind();
+    vb.Bind();
+    ib.Bind();
 
-    //  set the color
+    //  draw the void at the back.
     xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
     xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
     shader.Bind();
@@ -187,9 +201,19 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
 
     if (isOpenGLInitialised)
     {
-        auto viewPortSize = event.GetSize() * GetContentScaleFactor();
-        // TODO: change the code here. Resizing the glViewport may result in too high framerate.
-        glViewport(0, 0, viewPortSize.x, viewPortSize.y);
+        auto size = event.GetSize() * GetContentScaleFactor();
+        glViewport(0, 0, size.x, size.y);
+
+        // re-sync the uniform variable to openGL.
+        auto viewProjectionMatrix = glm::ortho(
+            (float)(-size.x / 2),
+            (float)(size.x - size.x / 2),
+            (float)(size.y / 2),
+            (float)(size.y - size.y / 2),
+            -1.f,
+            1.f);
+        shader.Bind();
+        // TODO: shader.SetUniform<glm::mat4>("uMVP", viewProjectionMatrix);
     }
 
     event.Skip();

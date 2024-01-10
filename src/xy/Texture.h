@@ -21,6 +21,7 @@ namespace xy
         wxString mFilePath;
         wxImage *mpImage;
         wxSize mSize;
+        inline static void SetActiveTexture(unsigned int slot) { xy_glRun(glActiveTexture(GL_TEXTURE0 + slot)); }
 
     public:
         Texture();
@@ -28,7 +29,7 @@ namespace xy
         ~Texture();
 
         void Init(const char *filename);
-        void Bind(GLid_t slot = 0) const;
+        void Bind(int slot = 0) const;
         void Unbind() const;
 
         inline bool IsValid() const { return mpImage != nullptr; }

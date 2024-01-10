@@ -13,13 +13,16 @@
 #include <glm/glm.hpp>
 #include "openGLDebug.h"
 #include <string>
+#include <map>
 namespace xy
 {
     class Shader
     {
     private:
         GLid_t mID;
+        std::map<std::string, int> mUniforms;
 
+        GLint GetUniformLocation(const std::string &name);
     public:
         Shader();
         ~Shader();
@@ -28,10 +31,9 @@ namespace xy
         void Init();
 
         inline bool IsValid() const { return mID != 0; }
-        void SetUniform4f(const std::string &name, const glm::vec4 &value) const;
-        void SetUniform1i(const std::string &name, int i) const;
+        template<typename T> void SetUniform(const std::string&, const T&);
+        // void SetUniform4f(const std::string &name, const glm::vec4 &value) const;
+        // void SetUniform1i(const std::string &name, int i) const;
 
-    private:
-        GLint GetUniformLocation(const std::string &name) const;
     };
 }

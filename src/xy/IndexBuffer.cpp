@@ -29,9 +29,7 @@ void xy::IndexBuffer<T>::Init(const data_t *data, size_t count)
     xy_glRun(glGenBuffers(1, &mID));
     mCount = count;
     Bind();
-    // xy_glRun(
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(data_t), data, GL_STATIC_DRAW);
-    //);
+    xy_glRun(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(data_t), data, GL_STATIC_DRAW));
 }
 
 template <typename T>

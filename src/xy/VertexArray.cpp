@@ -8,7 +8,6 @@
  *
  */
 #include "VertexArray.h"
-#include <vector>
 #include "openGLDebug.h"
 using namespace xy;
 
@@ -46,9 +45,10 @@ void VertexArray::AddBuffer(const VertexBuffer &buffer, const VertexBufferLayout
     const std::vector<VertexBufferElement> &elements = layout.GetElements();
 
     unsigned int offset = 0;
-    for (unsigned int i = 0; i < elements.size(); ++i)
+    for (int i = 0; i < elements.size(); ++i)
     {
         const VertexBufferElement &elem = elements[i];
+
         xy_glRun(glEnableVertexAttribArray(i));
         xy_glRun(glVertexAttribPointer(
             i,
