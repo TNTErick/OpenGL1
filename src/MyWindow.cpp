@@ -10,14 +10,11 @@
 
 #include "MyWindow.h"
 #include "MyGLCanvas.h"
-#include <wx/stdpaths.h>
 
 MyWindow::MyWindow(const wxString &title)
     : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxDefaultSize),
-      // canvas(nullptr),
-      mpContent(nullptr),
-      menuBar(nullptr),
-      mpBitmap(nullptr)
+      canvas(nullptr),
+      menuBar(nullptr)
 {
     // menubar
     menuBar = new wxMenuBar;
@@ -31,20 +28,16 @@ MyWindow::MyWindow(const wxString &title)
 
     // Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(MyWindow::OnClose), nullptr, this);
 
-    //// my gl canvas.
-    // wxGLAttributes attrs;
-    // attrs.PlatformDefaults().Defaults().EndList();
-    //
-    // if (MyGLCanvas::IsDisplaySupported(attrs))
-    //{
-    //     canvas = new MyGLCanvas(this, attrs);
-    //     canvas->SetMinSize(FromDIP(wxSize(640, 480)));
-    // }
-    // Bind(wxEVT_CLOSE_WINDOW, &MyWindow::OnClose, this);
+    // my gl canvas.
+    wxGLAttributes attrs;
+    attrs.PlatformDefaults().Defaults().EndList();
 
-    mpContent = new wxPanel(this);
-    mpContent->Bind(wxEVT_PAINT, &MyWindow::OnPaint, this);
-    // Bind(wxEVT_SIZE, &MyWindow::OnPaint, this);
+    if (MyGLCanvas::IsDisplaySupported(attrs))
+    {
+        canvas = new MyGLCanvas(this, attrs);
+        canvas->SetMinSize(FromDIP(wxSize(640, 480)));
+    }
+    Bind(wxEVT_CLOSE_WINDOW, &MyWindow::OnClose, this);
 }
 
 MyWindow::~MyWindow()
@@ -68,23 +61,4 @@ void MyWindow::OnClose(const wxEvent &WXUNUSED(event))
     //  wxWidget will fire the close event and destroy the canvas.
     // canvas->Destroy();
     Destroy();
-}
-
-void MyWindow::OnPaint(wxPaintEvent &event)
-{
-    if (mpBitmap == nullptr)
-    {
-        wxString s = wxGetCwd() + "\\resource\\mojang.png";
-        wxImage pImage = wxImage(s, wxBITMAP_TYPE_PNG);
-        pImage.HasAlpha();
-
-        mpBitmap = new wxBitmap;
-        mpBitmap->wxBitmap::wxBitmap(pImage);
-
-        wxLogDebug("mpBitmap is %d okay.", mpBitmap->IsOk());
-    }
-    wxPaintDC dc(mpContent);
-    dc.SetBrush(*wxBLUE_BRUSH);
-    dc.DrawRectangle(wxPoint(0, 0), wxSize(1000, 1000));
-    dc.DrawBitmap(*mpBitmap, wxPoint(0, 0));
 }

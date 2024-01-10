@@ -14,11 +14,9 @@
 
 MyApp::MyApp() : wxApp() {}
 
-wxIMPLEMENT_APP(MyApp);
-
 bool MyApp::OnInit()
 {
-    wxLogDebug("Hello from GLEW/wxWidgets!");
+    wxLogInfo("Hello from GLEW/wxWidgets!");
     if (!wxApp::OnInit())
         return false;
 
@@ -33,5 +31,7 @@ bool MyApp::OnInit()
 
     return true;
 }
+
+wxIMPLEMENT_APP(MyApp);
 
 // FINISHED?
