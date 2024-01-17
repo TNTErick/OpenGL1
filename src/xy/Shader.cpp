@@ -81,16 +81,18 @@ GLid_t getGLShadingProgram()
 }
 
 xy::Shader::Shader()
-    : mID(0),
-      mUniforms()
+    : mID(0)
+      // mUniforms()
 {
 }
 
 xy::Shader::~Shader()
 {
+    // mUniforms.~map();
     if (!IsValid())
         return;
     xy_glRun(glDeleteProgram(mID));
+    // mUniforms = std::map<std::string, int>();
     mID = 0;
 }
 
@@ -107,6 +109,11 @@ void xy::Shader::Bind() const
 void xy::Shader::Unbind() const
 {
     xy_glRun(glUseProgram(0));
+}
+
+void xy::Shader::ResizeWindow(const wxSize& size) const
+{
+
 }
 
 GLint xy::Shader::GetUniformLocation(const std::string &name)

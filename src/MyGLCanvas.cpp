@@ -105,12 +105,8 @@ bool MyGLCanvas::InitOpenGL()
 
     unsigned int indices[] =
         {
-            0,
-            1,
-            2,
-            2,
-            3,
-            0,
+            0, 1, 2,
+            2, 3, 0,
         };
     ib.Init(indices, 6);
 
@@ -194,6 +190,7 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
 {
     bool firstApperance = IsShownOnScreen() && !isOpenGLInitialised;
 
+    // re-sync the uniform variable to openGL.
     if (firstApperance)
     {
         InitOpenGL();
@@ -203,17 +200,18 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
     {
         auto size = event.GetSize() * GetContentScaleFactor();
         glViewport(0, 0, size.x, size.y);
-
-        // re-sync the uniform variable to openGL.
+        
         auto viewProjectionMatrix = glm::ortho(
-            (float)(-size.x / 2),
-            (float)(size.x - size.x / 2),
-            (float)(size.y / 2),
-            (float)(size.y - size.y / 2),
+            -((float)size.x / size.y),
+            ((float)size.x / size.y),
+            -1.f,
+            1.f,
             -1.f,
             1.f);
+
         shader.Bind();
-        // TODO: shader.SetUniform<glm::mat4>("uMVP", viewProjectionMatrix);
+        shader.SetUniform<glm::mat4>("uMVP", viewProjectionMatrix);
+
     }
 
     event.Skip();

@@ -20,7 +20,7 @@ namespace xy
     {
     private:
         GLid_t mID;
-        std::map<std::string, int> mUniforms;
+        // std::map<std::string, int> mUniforms;
 
         GLint GetUniformLocation(const std::string &name);
     public:
@@ -30,6 +30,7 @@ namespace xy
         void Unbind() const;
         void Init();
 
+        void ResizeWindow(const wxSize& size) const;
         inline bool IsValid() const { return mID != 0; }
         template<typename T> void SetUniform(const std::string&, const T&);
         // void SetUniform4f(const std::string &name, const glm::vec4 &value) const;
