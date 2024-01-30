@@ -27,7 +27,9 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       va(),
       shader(),
       renderer(),
-      tex()
+      tex(),
+      mCamera(),
+      mLastFrameMicroseconds(wxGetUTCTimeUSec())
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -47,15 +49,16 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     }
 
     // timer.
-    if (!timer.Start(30))
+    // if (!timer.Start(30))
     {
-        wxLogDebug("Cannot start timer");
+        wxLogDebug("Timer not started.");
     }
 
     // bind events.
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
     Bind(wxEVT_TIMER, &MyGLCanvas::OnTimer, this);
+    Bind(wxEVT_IDLE, &MyGLCanvas::OnIdle, this);
 }
 
 // deconstruct the object by deleting context
@@ -105,8 +108,12 @@ bool MyGLCanvas::InitOpenGL()
 
     unsigned int indices[] =
         {
-            0, 1, 2,
-            2, 3, 0,
+            0,
+            1,
+            2,
+            2,
+            3,
+            0,
         };
     ib.Init(indices, 6);
 
@@ -151,11 +158,15 @@ bool MyGLCanvas::InitGLEW()
     return true;
 }
 
-// Event Handling.
+// Frame Updating.
 
 void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
-    // wxPaintDC dc(this);
+    // show the framerate.
+    wxLongLong nowTimeMicroseconds = wxGetUTCTimeUSec();
+
+    // FIXME OnFrameRateChanged(1.0e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
+    mLastFrameMicroseconds = nowTimeMicroseconds;
 
     SetCurrent(*_context);
     if (!isOpenGLInitialised || !vb.IsValid() || !ib.IsValid() || !shader.IsValid() || !va.IsValid() || !tex.IsValid())
@@ -167,9 +178,12 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
     ib.Bind();
 
     //  draw the void at the back.
-    xy_glRun(glClearColor(0.f, 0.f, 0.f, 1.f));
+    xy_glRun(glClearColor(0.3f, 0.f, 0.f, 1.f));
     xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
     shader.Bind();
+    glm::mat4 modalMatrix = glm::mat4(1.0f);
+    glm::mat4 mvp = mPortProjectionMatrix * modalMatrix * mCamera.GetViewMatrix();
+    shader.SetUniform<glm::mat4>("uMVP", mvp);
 
     // TODO: change this to draw the thingies in the cherno vid.
     // shader.SetUniform4f("uColor", glm::vec4(r, .5f, .7f, 1.f));
@@ -196,23 +210,19 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
         InitOpenGL();
     }
 
-    if (isOpenGLInitialised)
-    {
-        auto size = event.GetSize() * GetContentScaleFactor();
-        glViewport(0, 0, size.x, size.y);
-        
-        auto viewProjectionMatrix = glm::ortho(
-            -((float)size.x / size.y),
-            ((float)size.x / size.y),
-            -1.f,
-            1.f,
-            -1.f,
-            1.f);
+    if (!isOpenGLInitialised)
+        return;
 
-        shader.Bind();
-        shader.SetUniform<glm::mat4>("uMVP", viewProjectionMatrix);
+    auto size = event.GetSize() * GetContentScaleFactor();
+    glViewport(0, 0, size.x, size.y);
 
-    }
+    mPortProjectionMatrix = glm::ortho(
+        -((float)size.x / size.y),
+        ((float)size.x / size.y),
+        -1.f,
+        1.f,
+        -1.f,
+        1.f);
 
     event.Skip();
 }
@@ -221,6 +231,13 @@ void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
 {
     // wxPostEvent(this, wxPaintEvent());
     //  wxPaintEvent is no longer constructable.
+
+    Refresh();
+}
+
+void MyGLCanvas::OnIdle(wxIdleEvent &evt)
+{
+    // When Idle, render next frame.
 
     Refresh();
 }

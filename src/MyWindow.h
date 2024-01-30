@@ -18,14 +18,14 @@ class MyGLCanvas; // include this class in the cpp file.
 class MyWindow : public wxFrame
 {
 private:
-    MyGLCanvas *canvas;
-    wxMenuBar *menuBar;
-    wxBitmap *mpBitmap;
+    MyGLCanvas *mpCanvas;
+    wxMenuBar *mpMenuBar;
 
 public:
     MyWindow(const wxString &title);
     ~MyWindow();
-    void OnPaint(wxPaintEvent &event);
-
+    void OnPaint(wxPaintEvent &WXUNUSED(event));
+    void OnFrameRateChanged(double rate);
     void OnClose(const wxEvent &WXUNUSED(event));
 };
+

@@ -27,8 +27,8 @@ bool MyApp::OnInit()
 
     if (window == nullptr)
         return false;
-    window->Show();
 
+    window->Show();
     return true;
 }
 

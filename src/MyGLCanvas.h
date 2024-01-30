@@ -20,6 +20,7 @@
 #include "xy/Shader.h"
 #include "xy/Renderer.h"
 #include "xy/Texture.h"
+#include "MyCamera.h"
 
 // will be included in the cpp file.
 class MyWindow;
@@ -34,6 +35,7 @@ public:
     void OnPaint(wxPaintEvent &WXUNUSED(event));
     void OnSize(wxSizeEvent &event);
     void OnTimer(wxTimerEvent &WXUNUSED(event));
+    void OnIdle(wxIdleEvent &WXUNUSED(event));
 
 private:
     bool InitOpenGL();
@@ -49,6 +51,9 @@ private:
     xy::Texture tex;
     float r, incr;
     wxTimer timer;
+    wxLongLong mLastFrameMicroseconds;
+    glm::mat4 mPortProjectionMatrix;
+    MyCamera mCamera;
 };
 
 // finished?
