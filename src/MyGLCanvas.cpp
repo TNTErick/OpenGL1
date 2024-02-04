@@ -59,6 +59,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
     Bind(wxEVT_TIMER, &MyGLCanvas::OnTimer, this);
     Bind(wxEVT_IDLE, &MyGLCanvas::OnIdle, this);
+    Bind(wxEVT_CHAR_HOOK, &MyGLCanvas::OnKeyDown, this);
 }
 
 // deconstruct the object by deleting context
@@ -159,13 +160,14 @@ bool MyGLCanvas::InitGLEW()
 }
 
 // Frame Updating.
-
-void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
+void MyGLCanvas::NextFrame()
 {
+    if (!isOpenGLInitialised)
+        return;
     // show the framerate.
     wxLongLong nowTimeMicroseconds = wxGetUTCTimeUSec();
-
-    // FIXME OnFrameRateChanged(1.0e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
+    // // TODO: use wxDC to draw text.
+    m_parent->OnFrameRateChanged(1.e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
     mLastFrameMicroseconds = nowTimeMicroseconds;
 
     SetCurrent(*_context);
@@ -197,6 +199,11 @@ void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
         incr = .05f;
 
     SwapBuffers();
+}
+
+void MyGLCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
+{
+    NextFrame();
 }
 
 // Resize the canvas (or initial OpenGL of the canvas if not yet)
@@ -237,7 +244,10 @@ void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
 
 void MyGLCanvas::OnIdle(wxIdleEvent &evt)
 {
-    // When Idle, render next frame.
+    NextFrame();
+}
 
-    Refresh();
+void MyGLCanvas::OnKeyDown(wxKeyEvent &evt)
+{
+    wxLogDebug("MyGLCanvas::OnKeyDown(%i)", evt.GetKeyCode());
 }

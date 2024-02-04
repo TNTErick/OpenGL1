@@ -36,12 +36,15 @@ public:
     void OnSize(wxSizeEvent &event);
     void OnTimer(wxTimerEvent &WXUNUSED(event));
     void OnIdle(wxIdleEvent &WXUNUSED(event));
+    void OnKeyDown(wxKeyEvent &WXUNUSED(event));
 
 private:
+    bool isOpenGLInitialised;
     bool InitOpenGL();
     bool InitGLEW();
-    bool isOpenGLInitialised;
+    void NextFrame();
 
+    MyWindow *m_parent;
     wxGLContext *_context;
     xy::VertexBuffer vb;
     xy::IndexBuffer<> ib; // default type is unsigned int

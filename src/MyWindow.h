@@ -19,7 +19,8 @@ class MyWindow : public wxFrame
 {
 private:
     MyGLCanvas *mpCanvas;
-    wxMenuBar *mpMenuBar;
+    wxStaticText *mpStaticText;
+    wxStatusBar *mpStatusBar;
 
 public:
     MyWindow(const wxString &title);
@@ -28,4 +29,3 @@ public:
     void OnFrameRateChanged(double rate);
     void OnClose(const wxEvent &WXUNUSED(event));
 };
-
