@@ -3,7 +3,7 @@
  * File:        src/MyGLCanvas.h
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2023-11-12
+ * Modified:    2024-02-08
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */
@@ -55,7 +55,7 @@ private:
     float r, incr;
     wxTimer timer;
     wxLongLong mLastFrameMicroseconds;
-    glm::mat4 mPortProjectionMatrix;
+    glm::mat4 mPortProjectionMatrix, mRotation;
     MyCamera mCamera;
 };
 

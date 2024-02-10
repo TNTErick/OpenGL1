@@ -3,7 +3,7 @@
  * File:        src/MyGLCanvas.cpp
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2023-12-25
+ * Modified:    2024-02-08
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */
@@ -29,7 +29,8 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       renderer(),
       tex(),
       mCamera(),
-      mLastFrameMicroseconds(wxGetUTCTimeUSec())
+      mLastFrameMicroseconds(wxGetUTCTimeUSec()),
+      mRotation(1.0f)
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -183,8 +184,8 @@ void MyGLCanvas::NextFrame()
     xy_glRun(glClearColor(0.3f, 0.f, 0.f, 1.f));
     xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
     shader.Bind();
-    glm::mat4 modalMatrix = glm::mat4(1.0f);
-    glm::mat4 mvp = mPortProjectionMatrix * modalMatrix * mCamera.GetViewMatrix();
+    mRotation = glm::rotate(mRotation, glm::radians(3.f), glm::vec3(0, 0, 1));
+    glm::mat4 mvp = mPortProjectionMatrix * mRotation * mCamera.GetViewMatrix();
     shader.SetUniform<glm::mat4>("uMVP", mvp);
 
     // TODO: change this to draw the thingies in the cherno vid.
@@ -245,6 +246,7 @@ void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
 void MyGLCanvas::OnIdle(wxIdleEvent &evt)
 {
     NextFrame();
+    evt.RequestMore();
 }
 
 void MyGLCanvas::OnKeyDown(wxKeyEvent &evt)

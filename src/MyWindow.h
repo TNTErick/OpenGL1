@@ -3,7 +3,7 @@
  * File:        src/MyWindow.h
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2023-11-12
+ * Modified:    2024-02-08
  * Description: `MyWindow` class is the class to which the program create window
  *frame according.
  *
@@ -21,11 +21,12 @@ private:
     MyGLCanvas *mpCanvas;
     wxStaticText *mpStaticText;
     wxStatusBar *mpStatusBar;
+    wxFrame *mpDebugInfoFrame;
 
 public:
     MyWindow(const wxString &title);
     ~MyWindow();
-    void OnPaint(wxPaintEvent &WXUNUSED(event));
+    // void OnPaint(wxPaintEvent &WXUNUSED(event));
     void OnFrameRateChanged(double rate);
     void OnClose(const wxEvent &WXUNUSED(event));
 };
