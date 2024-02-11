@@ -3,7 +3,7 @@
  * File:        src/MyGLCanvas.cpp
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2024-02-08
+ * Modified:    2024-02-12
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */
@@ -17,6 +17,7 @@
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     : wxGLCanvas(parent, attrs, wxID_ANY),
+      mpParent(parent),
       isOpenGLInitialised(false),
       _context(nullptr),
       r(0.f),
@@ -141,6 +142,9 @@ bool MyGLCanvas::InitOpenGL()
     // unbind everything and return.
     vb.Unbind();
     ib.Unbind();
+
+    // Initialise GL Objects.
+
     isOpenGLInitialised = true;
     return true;
 }
@@ -167,8 +171,7 @@ void MyGLCanvas::NextFrame()
         return;
     // show the framerate.
     wxLongLong nowTimeMicroseconds = wxGetUTCTimeUSec();
-    // // TODO: use wxDC to draw text.
-    m_parent->OnFrameRateChanged(1.e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
+    mpParent->OnFramerateChanged(1.e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
     mLastFrameMicroseconds = nowTimeMicroseconds;
 
     SetCurrent(*_context);

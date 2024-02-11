@@ -3,7 +3,7 @@
  * File:        src/MyGLCanvas.h
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2024-02-08
+ * Modified:    2024-02-12
  * Description: `MyGLCanvas` is a descendant of `wxGLCanvas` in which OpenGL can draw.
  *
  */
@@ -44,7 +44,7 @@ private:
     bool InitGLEW();
     void NextFrame();
 
-    MyWindow *m_parent;
+    MyWindow *mpParent;
     wxGLContext *_context;
     xy::VertexBuffer vb;
     xy::IndexBuffer<> ib; // default type is unsigned int

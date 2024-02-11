@@ -3,7 +3,7 @@
  * File:        src/MyWindow.cpp
  * Author:      TNTErick
  * Created:     2023-11-12
- * Modified:    2024-02-08
+ * Modified:    2024-02-12
  * Description: `MyWindow` defines the window frame of the app.
  *
  */
@@ -37,12 +37,14 @@ MyWindow::MyWindow(const wxString &title)
     Bind(wxEVT_CLOSE_WINDOW, &MyWindow::OnClose, this);
 
     // debug window.
-    
+    mpDebugInfoFrame = new MyDebugWindow(this);
 }
 
 MyWindow::~MyWindow()
 {
     Close();
+
+    // TODO: test if we should manually delete things.
 }
 
 void MyWindow::OnClose(const wxEvent &WXUNUSED(event))
@@ -63,7 +65,10 @@ void MyWindow::OnClose(const wxEvent &WXUNUSED(event))
     Destroy();
 }
 
-void MyWindow::OnFrameRateChanged(double frameRate)
+void MyWindow::OnFramerateChanged(double framerate)
 {
-    wxString str = wxString::Format("%.1f fps", frameRate);
+    if (nullptr == mpDebugInfoFrame)
+        return;
+    wxString str = wxString::Format("%.1f fps", framerate);
+    mpDebugInfoFrame->OnFramerateChanged(framerate);
 }

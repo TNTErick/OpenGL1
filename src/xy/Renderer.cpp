@@ -3,7 +3,7 @@
  * File:        src/xy/Renderer.h
  * Author:      TNTErick
  * Created:     2023-12-21
- * Modified:    2023-12-26
+ * Modified:    2024-02-08
  * Description: This class is responsible for call drawings to openGL, so that
  *              the code in `MyGLCanvas` can be clean.
  */
@@ -15,5 +15,5 @@ void xy::Renderer::Draw(const xy::VertexArray &vertexArray, const xy::generic::I
     shader.Bind();
     vertexArray.Bind();
     indices.Bind();
-    xy_glRun(glDrawElements(GL_TRIANGLES, indices.getSize(), indices.getGLenumType(), (void *) 0));
+    xy_glRun(glDrawElements(GL_TRIANGLES, indices.getSize(), indices.getGLenumType(), (void *)0));
 }
