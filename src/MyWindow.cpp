@@ -38,12 +38,14 @@ MyWindow::MyWindow(const wxString &title)
 
     // debug window.
     mpDebugInfoFrame = new MyDebugWindow(this);
+
+    // take-in the keyboard event.
+    Bind(wxEVT_CHAR_HOOK, &MyWindow::OnKeyDown, this);
 }
 
 MyWindow::~MyWindow()
 {
     Close();
-
     // TODO: test if we should manually delete things.
 }
 
@@ -69,6 +71,30 @@ void MyWindow::OnFramerateChanged(double framerate)
 {
     if (nullptr == mpDebugInfoFrame)
         return;
-    wxString str = wxString::Format("%.1f fps", framerate);
     mpDebugInfoFrame->OnFramerateChanged(framerate);
+}
+
+void MyWindow::OnKeyDown(wxKeyEvent &evt)
+{
+    switch (evt.GetUnicodeKey())
+    {
+    case 'W':
+        mpCanvas->OnKeyHeld(MoveDirection::FRONT);
+        break;
+    case 'S':
+        mpCanvas->OnKeyHeld(MoveDirection::BACK);
+        break;
+    case 'A':
+        mpCanvas->OnKeyHeld(MoveDirection::LEFT);
+        break;
+    case 'D':
+        mpCanvas->OnKeyHeld(MoveDirection::RIGHT);
+        break;
+    case 'Q':
+        mpCanvas->OnKeyHeld(MoveDirection::UP);
+        break;
+    case 'E':
+        mpCanvas->OnKeyHeld(MoveDirection::DOWN);
+        break;
+    }
 }

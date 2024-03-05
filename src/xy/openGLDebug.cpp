@@ -39,6 +39,7 @@ unsigned int xy::glSizeOf(unsigned int glEnumType)
     }
 
     wxASSERT_MSG(false, wxT("glSizeOf encounter an unknown type."));
+    return 0; // @msvc-ignore not all control paths return values.
 }
 
 template <typename T>

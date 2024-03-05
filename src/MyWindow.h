@@ -30,4 +30,5 @@ public:
     // void OnPaint(wxPaintEvent &WXUNUSED(event));
     void OnFramerateChanged(double rate);
     void OnClose(const wxEvent &WXUNUSED(event));
+    void OnKeyDown(wxKeyEvent &WXUNUSED(event));
 };

@@ -26,25 +26,12 @@
 class MyWindow;
 class MyGLCanvas : public wxGLCanvas
 {
-public:
-    MyGLCanvas(MyWindow *, const wxGLAttributes &);
-    ~MyGLCanvas();
-
-    // bool Destroy() override;
-
-    void OnPaint(wxPaintEvent &WXUNUSED(event));
-    void OnSize(wxSizeEvent &event);
-    void OnTimer(wxTimerEvent &WXUNUSED(event));
-    void OnIdle(wxIdleEvent &WXUNUSED(event));
-    void OnKeyDown(wxKeyEvent &WXUNUSED(event));
-
 private:
     bool isOpenGLInitialised;
     bool InitOpenGL();
     bool InitGLEW();
     void NextFrame();
 
-    MyWindow *mpParent;
     wxGLContext *_context;
     xy::VertexBuffer vb;
     xy::IndexBuffer<> ib; // default type is unsigned int
@@ -52,11 +39,21 @@ private:
     xy::Shader shader;
     xy::Renderer renderer;
     xy::Texture tex;
-    float r, incr;
+    float WoverH;
     wxTimer timer;
     wxLongLong mLastFrameMicroseconds;
     glm::mat4 mPortProjectionMatrix, mRotation;
     MyCamera mCamera;
+
+public:
+    MyGLCanvas(MyWindow *, const wxGLAttributes &);
+    ~MyGLCanvas();
+
+    void OnKeyHeld(MoveDirection);
+    void OnPaint(wxPaintEvent &WXUNUSED(event));
+    void OnSize(wxSizeEvent &event);
+    void OnTimer(wxTimerEvent &WXUNUSED(event));
+    void OnIdle(wxIdleEvent &WXUNUSED(event));
 };
 
 // finished?

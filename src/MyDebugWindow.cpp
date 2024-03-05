@@ -11,8 +11,7 @@
 #include "MyDebugWindow.h"
 
 MyDebugWindow::MyDebugWindow(MyWindow *parent)
-    : wxFrame(parent, wxID_ANY, "Robot Dance - Debug Info"),
-      m_parent(parent)
+    : wxFrame(parent, wxID_ANY, "Robot Dance - Debug Info")
 {
     // Create a sizer to organize the controls
     wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -50,5 +49,5 @@ void MyDebugWindow::OnFramerateChanged(double fps)
 {
     if (IsBeingDeleted())
         return;
-    mpLabelFPS->SetLabel(wxString::Format("Your openGL now run at %.1f fps", fps));
+    mpLabelFPS->SetLabel(wxString::Format("%.1f fps", fps));
 }

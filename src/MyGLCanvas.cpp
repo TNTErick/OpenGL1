@@ -17,11 +17,10 @@
 // init the canvas with the wxGLContext.
 MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     : wxGLCanvas(parent, attrs, wxID_ANY),
-      mpParent(parent),
+      // mpParent(parent),
       isOpenGLInitialised(false),
       _context(nullptr),
-      r(0.f),
-      incr(.05f),
+      WoverH(1),
       timer(this),
       vb(),
       ib(),
@@ -51,7 +50,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     }
 
     // timer.
-    // if (!timer.Start(30))
+    if (!timer.Start(16))
     {
         wxLogDebug("Timer not started.");
     }
@@ -60,8 +59,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
     Bind(wxEVT_TIMER, &MyGLCanvas::OnTimer, this);
-    Bind(wxEVT_IDLE, &MyGLCanvas::OnIdle, this);
-    Bind(wxEVT_CHAR_HOOK, &MyGLCanvas::OnKeyDown, this);
+    // Bind(wxEVT_IDLE, &MyGLCanvas::OnIdle, this);
 }
 
 // deconstruct the object by deleting context
@@ -82,6 +80,7 @@ bool MyGLCanvas::InitOpenGL()
         return false;
     SetCurrent(*_context);
 
+    xy_glRun(glEnable(GL_DEPTH_TEST));
     xy_glRun(glEnable(GL_DEBUG_OUTPUT));
     // init opengl functions
     if (!InitGLEW())
@@ -171,7 +170,7 @@ void MyGLCanvas::NextFrame()
         return;
     // show the framerate.
     wxLongLong nowTimeMicroseconds = wxGetUTCTimeUSec();
-    mpParent->OnFramerateChanged(1.e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
+    reinterpret_cast<MyWindow *>(m_parent)->OnFramerateChanged(1.e6 / (nowTimeMicroseconds - mLastFrameMicroseconds).ToDouble());
     mLastFrameMicroseconds = nowTimeMicroseconds;
 
     SetCurrent(*_context);
@@ -185,22 +184,16 @@ void MyGLCanvas::NextFrame()
 
     //  draw the void at the back.
     xy_glRun(glClearColor(0.3f, 0.f, 0.f, 1.f));
-    xy_glRun(glClear(GL_COLOR_BUFFER_BIT));
+    xy_glRun(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     shader.Bind();
-    mRotation = glm::rotate(mRotation, glm::radians(3.f), glm::vec3(0, 0, 1));
-    glm::mat4 mvp = mPortProjectionMatrix * mRotation * mCamera.GetViewMatrix();
+    mRotation = glm::rotate(mRotation, 360.f, glm::vec3(0, 0, 1));
+    glm::mat4 mvp = mPortProjectionMatrix * mCamera.GetViewMatrix(WoverH) * mRotation;
     shader.SetUniform<glm::mat4>("uMVP", mvp);
 
     // TODO: change this to draw the thingies in the cherno vid.
     // shader.SetUniform4f("uColor", glm::vec4(r, .5f, .7f, 1.f));
 
     renderer.Draw(va, ib, shader);
-
-    r += incr;
-    if (r >= 1.f)
-        incr = -.05f;
-    else if (r <= 0.f)
-        incr = .05f;
 
     SwapBuffers();
 }
@@ -227,9 +220,11 @@ void MyGLCanvas::OnSize(wxSizeEvent &event)
     auto size = event.GetSize() * GetContentScaleFactor();
     glViewport(0, 0, size.x, size.y);
 
+    WoverH = static_cast<float>(size.x / size.y);
+
     mPortProjectionMatrix = glm::ortho(
-        -((float)size.x / size.y),
-        ((float)size.x / size.y),
+        -WoverH,
+        WoverH,
         -1.f,
         1.f,
         -1.f,
@@ -249,10 +244,10 @@ void MyGLCanvas::OnTimer(wxTimerEvent &WXUNUSED(evt))
 void MyGLCanvas::OnIdle(wxIdleEvent &evt)
 {
     NextFrame();
-    evt.RequestMore();
+    // evt.RequestMore();
 }
 
-void MyGLCanvas::OnKeyDown(wxKeyEvent &evt)
+void MyGLCanvas::OnKeyHeld(MoveDirection direction)
 {
-    wxLogDebug("MyGLCanvas::OnKeyDown(%i)", evt.GetKeyCode());
+    mCamera.OnMovement(direction);
 }

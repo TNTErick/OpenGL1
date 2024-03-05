@@ -16,7 +16,6 @@ class MyWindow;
 class MyDebugWindow : public wxFrame
 {
 private:
-    MyWindow *m_parent;
     wxStaticText *mpLabelFPS;
     wxStaticText *mpLabelPosition;
     wxPanel *mpKeyboardPanel;
