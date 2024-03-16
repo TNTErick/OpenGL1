@@ -13,7 +13,7 @@ else()
         GIT_REPOSITORY
         https://github.com/wxWidgets/wxWidgets.git
         GIT_TAG
-        v3.2.4
+        v3.2.2.1
         UPDATE_COMMAND
         ""
         CMAKE_ARGS
