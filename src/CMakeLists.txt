@@ -1,6 +1,10 @@
+
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 
-project(wx_opengl_tutorial_core LANGUAGES CXX)
+project(XY_OpenGL_core LANGUAGES CXX)
+
+message("Starting Processing src/\n\n")
+get_filename_component(PARENT_DIR ".." REALPATH)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,10 +21,8 @@ find_package(wxWidgets COMPONENTS core base gl REQUIRED)
 set(GLEW_USE_STATIC_LIBS ON)
 find_package(GLEW REQUIRED CONFIG)
 
-
-set(glm_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/glm/glm/cmake/glm)
-find_package(glm REQUIRED)
-
+#set(STAGED_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/../build/stage")
+#file(COPY "${STAGED_INSTALL_PREFIX}/lib/Debug/*.lib" "${STAGED_INSTALL_PREFIX}/lib/Release/*" DESTINATION "${STAGED_INSTALL_PREFIX}/lib")
 
 # the compiled files here.
 list(APPEND SRCS
@@ -31,12 +33,10 @@ ${CMAKE_CURRENT_LIST_DIR}/MyCamera.cpp
 ${CMAKE_CURRENT_LIST_DIR}/MyDebugWindow.cpp
 )
 
-message("${CMAKE_CURRENT_LIST_DIR}, ${CMAKE_BINARY_DIR}")
-
 include(xy/CMakeLists.txt)
 
 include(${wxWidgets_USE_FILE})
-include_directories(main PRIVATE ${GLM_INCLUDE_DIRS})
+include_directories(main PRIVATE "${PARENT_DIR}/thirdparty/glm")
 
 if(APPLE)
     # create bundle on apple compiles
@@ -51,4 +51,10 @@ else()
     add_executable(main WIN32 ${SRCS} main.exe.manifest)
 endif()
 
-target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES} GLEW::glew_s glm::glm)
+target_link_libraries(main PRIVATE ${wxWidgets_LIBRARIES} GLEW::glew_s glm)
+
+#temporarily copy by hand instead of auto-detect.
+
+message("COPYING FILES RN DONT INTERRUPT")
+#file(COPY "${PARENT_DIR}/build/stage/lib/Debug/glm.*" DESTINATION "${PARENT_DIR}/build/stage/lib")
+#file(COPY "${PARENT_DIR}/build/stage/lib/Debug/glm.*" DESTINATION "${CMAKE_BINARY_DIR}")

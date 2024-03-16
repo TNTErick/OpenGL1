@@ -13,7 +13,7 @@ else()
         GIT_REPOSITORY
         https://github.com/wxWidgets/wxWidgets.git
         GIT_TAG
-        v3.5
+        v3.2.4
         UPDATE_COMMAND
         ""
         CMAKE_ARGS
@@ -37,7 +37,6 @@ else()
     set(wxWidgets_ROOT_DIR ${STAGED_INSTALL_PREFIX})
     file(TO_NATIVE_PATH "${wxWidgets_ROOT_DIR}" wxWidgets_ROOT_DIR)
     set(wxWidgets_ROOT_DIR ${wxWidgets_ROOT_DIR} CACHE INTERNAL "wxWidgets installation dir")
-
     set(ENV_WX_CONFIG ${STAGED_INSTALL_PREFIX}/bin/wx-config)
     file(TO_NATIVE_PATH "${ENV_WX_CONFIG}" ENV_WX_CONFIG)
     set(ENV_WX_CONFIG ${ENV_WX_CONFIG} CACHE INTERNAL "wx-config dir")
