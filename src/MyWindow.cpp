@@ -10,9 +10,10 @@
 
 #include "MyWindow.h"
 #include "MyGLCanvas.h"
+#include "xy/Mouse.h"
 
 MyWindow::MyWindow(const wxString &title)
-    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxDefaultSize),
+    : wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(1280, 720)),
       mpCanvas(nullptr),
       mpDebugInfoFrame(nullptr)
 {
@@ -41,6 +42,8 @@ MyWindow::MyWindow(const wxString &title)
 
     // take-in the keyboard event.
     Bind(wxEVT_CHAR_HOOK, &MyWindow::OnKeyDown, this);
+    Bind(wxEVT_MOTION, &MyWindow::OnMouseMove, this);
+    Bind(wxEVT_LEFT_DOWN, &MyWindow::OnClickIn, this);
 }
 
 MyWindow::~MyWindow()
@@ -76,25 +79,54 @@ void MyWindow::OnFramerateChanged(double framerate)
 
 void MyWindow::OnKeyDown(wxKeyEvent &evt)
 {
-    switch (evt.GetUnicodeKey())
-    {
-    case 'W':
-        mpCanvas->OnKeyHeld(MoveDirection::FRONT);
-        break;
-    case 'S':
-        mpCanvas->OnKeyHeld(MoveDirection::BACK);
-        break;
-    case 'A':
-        mpCanvas->OnKeyHeld(MoveDirection::LEFT);
-        break;
-    case 'D':
-        mpCanvas->OnKeyHeld(MoveDirection::RIGHT);
-        break;
-    case 'Q':
-        mpCanvas->OnKeyHeld(MoveDirection::UP);
-        break;
-    case 'E':
-        mpCanvas->OnKeyHeld(MoveDirection::DOWN);
-        break;
-    }
+    wxChar ch;
+    while (WXK_NONE != (ch = evt.GetUnicodeKey()))
+        switch (ch)
+        {
+        case 'W':
+            mpCanvas->OnKeyHeld(MoveDirection::FRONT);
+            return;
+        case 'S':
+            mpCanvas->OnKeyHeld(MoveDirection::BACK);
+            return;
+        case 'A':
+            mpCanvas->OnKeyHeld(MoveDirection::LEFT);
+            return;
+        case 'D':
+            mpCanvas->OnKeyHeld(MoveDirection::RIGHT);
+            return;
+        case 'Q':
+            mpCanvas->OnKeyHeld(MoveDirection::DOWN);
+            return;
+        case 'E':
+            mpCanvas->OnKeyHeld(MoveDirection::UP);
+            return;
+        }
+
+    while (WXK_NONE != (ch = evt.GetKeyCode()))
+        switch (evt.GetKeyCode())
+        {
+        case WXK_LEFT:
+            mpCanvas->OnMouseMove(wxPoint(0, -1));
+            break;
+        case WXK_RIGHT:
+            mpCanvas->OnMouseMove(wxPoint(0, 1));
+            break;
+        case WXK_UP:
+            mpCanvas->OnMouseMove(wxPoint(1, 0));
+            break;
+        case WXK_DOWN:
+            mpCanvas->OnMouseMove(wxPoint(-1, 0));
+            break;
+        case WXK_ESCAPE:
+            // leave focus.
+            break;
+        }
+}
+
+void MyWindow::OnMouseMove(wxMouseEvent &event)
+{
+    mMouse.OnMouse(event);
+    mpCanvas->OnMouseMove(mMouse.GetMovement());
+    event.Skip(); // pass the event to default event handlers.
 }

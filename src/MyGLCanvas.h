@@ -54,6 +54,7 @@ public:
     void OnSize(wxSizeEvent &event);
     void OnTimer(wxTimerEvent &WXUNUSED(event));
     void OnIdle(wxIdleEvent &WXUNUSED(event));
+    inline void OnMouseMove(wxPoint const &mvt) { mCamera.OnTurn(mvt); };
 };
 
 // finished?

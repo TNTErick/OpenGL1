@@ -30,7 +30,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
       tex(),
       mCamera(),
       mLastFrameMicroseconds(wxGetUTCTimeUSec()),
-      mRotation(1.0f)
+      mRotation(.01f)
 {
     // context.
     wxGLContextAttrs oglattrs;
@@ -40,7 +40,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     if (!_context->IsOK())
     {
         wxMessageBox(
-            "Your OpenGL version is Older than 3.3 and is incompatible with the program. Please update your graphic driver.",
+            "Your OpenGL version is incompatible with the program (v3.3). Please update your graphic driver.",
             "OpenGL Init Error",
             wxOK | wxICON_ERROR,
             this);
@@ -54,7 +54,7 @@ MyGLCanvas::MyGLCanvas(MyWindow *parent, const wxGLAttributes &attrs)
     {
         wxLogDebug("Timer not started.");
     }
-
+    SetCursor(wxNullCursor);
     // bind events.
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
@@ -186,11 +186,11 @@ void MyGLCanvas::NextFrame()
     xy_glRun(glClearColor(0.3f, 0.f, 0.f, 1.f));
     xy_glRun(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     shader.Bind();
-    mRotation = glm::rotate(mRotation, 360.f, glm::vec3(0, 0, 1));
+    mRotation = glm::rotate(mRotation, 3.f, glm::vec3(0, 0, 1));
     glm::mat4 mvp = mPortProjectionMatrix * mCamera.GetViewMatrix(WoverH) * mRotation;
     shader.SetUniform<glm::mat4>("uMVP", mvp);
 
-    // TODO: change this to draw the thingies in the cherno vid.
+    // to odo: change this to draw the thingies in the cherno vid.
     // shader.SetUniform4f("uColor", glm::vec4(r, .5f, .7f, 1.f));
 
     renderer.Draw(va, ib, shader);

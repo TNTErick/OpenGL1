@@ -24,6 +24,13 @@ namespace xy
 
     template <typename T>
     static constexpr GLenum glEnumTypeOf();
+    constexpr long double PI = 3.1415926535897932384626433832795028841971693993L;
+    constexpr long double TE = PI / 2.L;
+    constexpr long double TAU = PI * 2.L;
 }
 
-#define xy_glRun(x) while (glGetError());x;xy::_glErrorLoopThroughAndLog(__LINE__, __FILE__)
+#define xy_glRun(x)      \
+    while (glGetError()) \
+        ;                \
+    x;                   \
+    xy::_glErrorLoopThroughAndLog(__LINE__, __FILE__)

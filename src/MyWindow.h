@@ -13,6 +13,7 @@
 #include <wx/wx.h>
 #include <wx/menu.h>
 #include "MyDebugWindow.h"
+#include "xy/Mouse.h"
 
 class MyGLCanvas; // include this class in the cpp file.
 
@@ -23,6 +24,7 @@ private:
     wxStaticText *mpStaticText;
     wxStatusBar *mpStatusBar;
     MyDebugWindow *mpDebugInfoFrame;
+    xy::Mouse mMouse;
 
 public:
     MyWindow(const wxString &title);
@@ -31,4 +33,6 @@ public:
     void OnFramerateChanged(double rate);
     void OnClose(const wxEvent &WXUNUSED(event));
     void OnKeyDown(wxKeyEvent &WXUNUSED(event));
+    void OnMouseMove(wxMouseEvent &event);
+    inline void OnClickIn(wxMouseEvent &event){mMouse.OnActivate();}
 };

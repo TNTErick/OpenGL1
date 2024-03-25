@@ -10,6 +10,7 @@
 
 #pragma once
 #include <glm/glm.hpp>
+#include <wx/wx.h>
 
 enum class MoveDirection : char
 {
@@ -19,20 +20,26 @@ enum class MoveDirection : char
     LEFT,
     RIGHT,
     UP,
-    DOWN
+    DOWN,
 };
 
 class MyCamera
 {
 private:
-    glm::vec3 mPosition, mRearDirection;
-    // glm::vec3 mAbsoluteFrontDirection;
-    inline static const glm::vec3 absoluteUpDirection{0.f, 1.f, 0.f};
-    float mSpeed;
+    glm::vec3 mPosition;
+    //glm::vec3 mFrontDirection;
+    glm::vec2 mPitch7Yaw;
 
+    inline static const glm::vec3 absoluteUpDirection{0.f, 1.f, 0.f};
+    inline static const float mSpeed = .1f;
+    inline static const float mTurnSpeed = .01f;
 public:
     MyCamera();
     glm::mat4 GetViewMatrix(float) const;
     void OnMovement(MoveDirection);
+    const glm::vec3 GetFrontDirection() const;
     void LookAt(glm::vec3 targetPosition);
+
+    // yaw, -pitch
+    void OnTurn(const wxPoint &UpRight);
 };
